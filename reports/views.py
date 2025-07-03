@@ -114,11 +114,13 @@ def process_report(file_path, user):
     # Try to map actual columns to expected columns
     column_mapping = {}
     for actual_col in df.columns:
-        # Flexible matching for contractor/candidate name
-        if any(word in actual_col for word in ['contractor', 'candidate', 'employee', 'worker']):
+        # Explicitly look for contractor/candidate NAME fields (not ID fields)
+        if (any(word in actual_col for word in ['contractor_name', 'candidate_name', 'employee_name', 'worker_name']) or
+            (any(word in actual_col for word in ['contractor', 'candidate', 'employee', 'worker']) and 'name' in actual_col)):
             column_mapping['contractor_name'] = actual_col
-        # Flexible matching for client/customer name
-        elif any(word in actual_col for word in ['customer', 'client']):
+        # Explicitly look for client/customer NAME fields (not ID fields)  
+        elif (any(word in actual_col for word in ['customer_name', 'client_name']) or
+              (any(word in actual_col for word in ['customer', 'client']) and 'name' in actual_col)):
             column_mapping['client_name'] = actual_col
         # Flexible matching for spread amount
         elif any(word in actual_col for word in ['spread', 'expected_net_spread', 'net_spread', 'amount']):
