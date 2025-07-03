@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 
 {% block title %}Review Queue - Staffing Tracker{% endblock %}
@@ -7,14 +6,14 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Review Queue</h1>
     <a href="{% url 'candidates:list' %}" class="btn btn-secondary">
-        <i class="fas fa-arrow-left"></i> Back to Candidates
+        <i class="fas fa-arrow-left"></i> Back to Contractors
     </a>
 </div>
 
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">Candidates Pending Review</h5>
-        <small class="text-muted">These candidates were not found in the latest report upload</small>
+        <h5 class="mb-0">Contractors Pending Review</h5>
+        <small class="text-muted">These contractors were not found in the latest report upload</small>
     </div>
     <div class="card-body">
         {% if candidates %}
@@ -24,7 +23,7 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Candidate</th>
+                            <th>Contractor</th>
                             <th>Client</th>
                             <th>Contract Period</th>
                             <th>Weekly Spread</th>
@@ -60,8 +59,8 @@
         {% else %}
         <div class="text-center py-5">
             <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
-            <h4>No items to review</h4>
-            <p class="text-muted">All candidates are up to date!</p>
+            <h5>No contractors pending review</h5>
+            <p class="text-muted">All contractors are up to date!</p>
         </div>
         {% endif %}
     </div>

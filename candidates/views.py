@@ -11,11 +11,24 @@ from .forms import CandidateForm
 def candidate_list(request):
     candidates = Candidate.objects.filter(user=request.user, status='active')
     
+    # Handle batch deletion
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        selected_candidates = request.POST.getlist('selected_candidates')
+        
+        if action == 'delete' and selected_candidates:
+            deleted_count = Candidate.objects.filter(
+                pk__in=selected_candidates,
+                user=request.user
+            ).delete()[0]
+            messages.success(request, f'Successfully deleted {deleted_count} contractors.')
+            return redirect('candidates:list')
+    
     # Search functionality
     search = request.GET.get('search')
     if search:
         candidates = candidates.filter(
-            candidate_name__icontains=search
+            contractor_name__icontains=search
         ) | candidates.filter(
             client_name__icontains=search
         )
@@ -44,7 +57,7 @@ def candidate_create(request):
             candidate = form.save(commit=False)
             candidate.user = request.user
             candidate.save()
-            messages.success(request, 'Candidate added successfully!')
+            messages.success(request, 'Contractor added successfully!')
             return redirect('candidates:list')
     else:
         form = CandidateForm()
@@ -63,7 +76,7 @@ def candidate_edit(request, pk):
         form = CandidateForm(request.POST, instance=candidate)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Candidate updated successfully!')
+            messages.success(request, 'Contractor updated successfully!')
             return redirect('candidates:detail', pk=candidate.pk)
     else:
         form = CandidateForm(instance=candidate)
@@ -81,7 +94,7 @@ def candidate_delete(request, pk):
     
     if request.method == 'POST':
         candidate.delete()
-        messages.success(request, 'Candidate deleted successfully!')
+        messages.success(request, 'Contractor deleted successfully!')
         return redirect('candidates:list')
     
     return render(request, 'candidates/delete.html', {'candidate': candidate})
@@ -99,11 +112,11 @@ def review_queue(request):
         if action == 'reactivate':
             candidate.status = 'active'
             candidate.save()
-            messages.success(request, f'Reactivated {candidate.candidate_name}')
+            messages.success(request, f'Reactivated {candidate.contractor_name}')
         elif action == 'remove':
             candidate.status = 'inactive'
             candidate.save()
-            messages.success(request, f'Removed {candidate.candidate_name}')
+            messages.success(request, f'Removed {candidate.contractor_name}')
         
         return redirect('candidates:review_queue')
     

@@ -12,7 +12,7 @@ class Candidate(models.Model):
         ('inactive', 'Inactive'),
     ]
     
-    candidate_name = models.CharField(max_length=200)
+    contractor_name = models.CharField(max_length=200)
     client_name = models.CharField(max_length=200)
     contract_start_date = models.DateField()
     contract_end_date = models.DateField()
@@ -27,7 +27,7 @@ class Candidate(models.Model):
         ordering = ['-created_at']
     
     def __str__(self):
-        return f"{self.candidate_name} at {self.client_name}"
+        return f"{self.contractor_name} at {self.client_name}"
     
     @property
     def contract_status(self):

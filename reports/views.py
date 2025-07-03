@@ -109,14 +109,14 @@ def process_report(file_path, user):
     print(f"Cleaned columns: {list(df.columns)}")
     
     # Required columns (only these are essential)
-    required_columns = ['candidate_name', 'client_name', 'weekly_spread_amount']
+    required_columns = ['contractor_name', 'client_name', 'weekly_spread_amount']
     
     # Try to map actual columns to expected columns
     column_mapping = {}
     for actual_col in df.columns:
         # Flexible matching for contractor/candidate name
         if any(word in actual_col for word in ['contractor', 'candidate', 'employee', 'worker']):
-            column_mapping['candidate_name'] = actual_col
+            column_mapping['contractor_name'] = actual_col
         # Flexible matching for client/customer name
         elif any(word in actual_col for word in ['customer', 'client']):
             column_mapping['client_name'] = actual_col
@@ -145,7 +145,7 @@ def process_report(file_path, user):
     # Get existing active candidates for this user
     existing_candidates = set(
         Candidate.objects.filter(user=user, status='active').values_list(
-            'candidate_name', 'client_name'
+            'contractor_name', 'client_name'
         )
     )
     
@@ -159,21 +159,21 @@ def process_report(file_path, user):
     for index, row in df.iterrows():
         try:
             # Use column mapping to get the right values
-            candidate_name = str(row.get(column_mapping.get('candidate_name', 'candidate_name'), '')).strip()
+            contractor_name = str(row.get(column_mapping.get('contractor_name', 'contractor_name'), '')).strip()
             client_name = str(row.get(column_mapping.get('client_name', 'client_name'), '')).strip()
             
-            print(f"Processing row {index + 1}: '{candidate_name}' - '{client_name}'")
+            print(f"Processing row {index + 1}: '{contractor_name}' - '{client_name}'")
             
-            if not candidate_name or not client_name or candidate_name == 'nan' or client_name == 'nan':
+            if not contractor_name or not client_name or contractor_name == 'nan' or client_name == 'nan':
                 print(f"Skipping row {index + 1} due to missing name data")
                 continue
                 
-            report_candidates.add((candidate_name, client_name))
+            report_candidates.add((contractor_name, client_name))
             
             # Check if candidate already exists
             existing_candidate = Candidate.objects.filter(
                 user=user,
-                candidate_name__iexact=candidate_name,
+                contractor_name__iexact=contractor_name,
                 client_name__iexact=client_name,
                 status='active'
             ).first()
@@ -205,7 +205,7 @@ def process_report(file_path, user):
                     recruiter = str(row.get(recruiter_col, '')).strip()
                 
                 candidate_data = {
-                    'candidate_name': candidate_name,
+                    'contractor_name': contractor_name,
                     'client_name': client_name,
                     'contract_start_date': start_date,
                     'contract_end_date': end_date,
@@ -213,7 +213,7 @@ def process_report(file_path, user):
                     'recruiter_or_account_manager': recruiter,
                 }
             except Exception as e:
-                print(f"Error parsing row data for {candidate_name} - {client_name}: {str(e)}")
+                print(f"Error parsing row data for {contractor_name} - {client_name}: {str(e)}")
                 continue
             
             if existing_candidate:
@@ -222,7 +222,7 @@ def process_report(file_path, user):
                     setattr(existing_candidate, field, value)
                 existing_candidate.save()
                 updated_candidates += 1
-                print(f"Updated existing candidate: {candidate_name}")
+                print(f"Updated existing candidate: {contractor_name}")
             else:
                 # Create new candidate
                 new_candidate = Candidate.objects.create(
@@ -231,17 +231,17 @@ def process_report(file_path, user):
                     **candidate_data
                 )
                 new_candidates += 1
-                print(f"Created new candidate: {candidate_name} (ID: {new_candidate.pk})")
+                print(f"Created new candidate: {contractor_name} (ID: {new_candidate.pk})")
                 
         except Exception as e:
             continue  # Skip problematic rows
     
     # Move candidates not in the report to review queue
     candidates_not_in_report = existing_candidates - report_candidates
-    for candidate_name, client_name in candidates_not_in_report:
+    for contractor_name, client_name in candidates_not_in_report:
         Candidate.objects.filter(
             user=user,
-            candidate_name=candidate_name,
+            contractor_name=contractor_name,
             client_name=client_name,
             status='active'
         ).update(status='review')
