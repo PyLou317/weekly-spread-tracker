@@ -53,9 +53,26 @@ def process_report(file_path, user):
             df = None
             for encoding in encodings:
                 try:
-                    df = pd.read_csv(file_path, encoding=encoding)
+                    # Try with pandas-compatible error handling
+                    try:
+                        # For newer pandas versions
+                        df = pd.read_csv(
+                            file_path, 
+                            encoding=encoding,
+                            skipinitialspace=True,
+                            on_bad_lines='skip'
+                        )
+                    except TypeError:
+                        # For older pandas versions
+                        df = pd.read_csv(
+                            file_path, 
+                            encoding=encoding,
+                            skipinitialspace=True,
+                            error_bad_lines=False,
+                            warn_bad_lines=False
+                        )
                     break
-                except UnicodeDecodeError:
+                except (UnicodeDecodeError, pd.errors.ParserError):
                     continue
             if df is None:
                 raise Exception("Could not decode CSV file with any supported encoding")
