@@ -1,4 +1,5 @@
 
+
 import pandas as pd
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -9,7 +10,7 @@ from .forms import ReportUploadForm
 from datetime import datetime
 import os
 from typing import Type
-from candidates.models import Candidate as CandidateModel
+from candidates.models import Candidate
 
 
 @login_required
@@ -109,8 +110,8 @@ def process_report(file_path, user):
     
     # Expected columns (adjust based on actual report format)
     expected_columns = [
-        'contractor_name', 'customer_name', 'start_date',
-        'end date', 'spread', 'recruiter'
+        'candidate_name', 'client_name', 'contract_start_date',
+        'contract_end_date', 'weekly_spread_amount', 'recruiter_or_account_manager'
     ]
     
     # Try to map actual columns to expected columns
@@ -118,17 +119,17 @@ def process_report(file_path, user):
     for expected_col in expected_columns:
         for actual_col in df.columns:
             # Flexible matching for common variations
-            if expected_col.lower() == 'contractor_name':
+            if expected_col == 'candidate_name':
                 if any(word in actual_col for word in ['contractor', 'candidate',
-                                                       'employee', 'worker'
+                                                       'employee', 'worker', 'name'
                                                       ]):
                     column_mapping[expected_col] = actual_col
                     break
-            elif expected_col == 'customer_name':
+            elif expected_col == 'client_name':
                 if any(word in actual_col for word in ['customer', 'client']):
                     column_mapping[expected_col] = actual_col
                     break
-            elif expected_col == 'start_date':
+            elif expected_col == 'contract_start_date':
                 if any(word in actual_col for word in ['start', 'begin',
                                                 'commence']) and 'date' in actual_col:
                     column_mapping[expected_col] = actual_col
@@ -138,12 +139,13 @@ def process_report(file_path, user):
                             'complete', 'weekending']) and 'date' in actual_col:
                     column_mapping[expected_col] = actual_col
                     break
-            elif expected_col == 'spread':
+            elif expected_col == 'weekly_spread_amount':
                 if any(word in actual_col for word in ['spread',
-                                    'expected_net_spread', 'net_spread']):
+                                    'expected_net_spread', 'net_spread', 'amount']):
                     column_mapping[expected_col] = actual_col
                     break
-            elif expected_col == 'recruiter' and any(word in actual_col for word in ['recruiter']):
+            elif expected_col == 'recruiter_or_account_manager':
+                if any(word in actual_col for word in ['recruiter', 'account', 'manager', 'am']):
                     column_mapping[expected_col] = actual_col
                     break
     
@@ -160,7 +162,7 @@ def process_report(file_path, user):
     
     # Get existing active candidates for this user
     existing_candidates = set(
-        CandidateModel.objects.filter(user=user, status='active').values_list(
+        Candidate.objects.filter(user=user, status='active').values_list(
             'candidate_name', 'client_name'
         )
     )
@@ -271,3 +273,4 @@ def process_report(file_path, user):
     return {
         'message': f"Added {new_candidates} new candidates, updated {updated_candidates} existing candidates, moved {moved_to_review} to review queue."
     }
+
