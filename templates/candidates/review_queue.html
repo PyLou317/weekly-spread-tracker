@@ -1,0 +1,69 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Review Queue - Staffing Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Review Queue</h1>
+    <a href="{% url 'candidates:list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Candidates
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Candidates Pending Review</h5>
+        <small class="text-muted">These candidates were not found in the latest report upload</small>
+    </div>
+    <div class="card-body">
+        {% if candidates %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Candidate</th>
+                            <th>Client</th>
+                            <th>Contract Period</th>
+                            <th>Weekly Spread</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for candidate in candidates %}
+                        <tr>
+                            <td>{{ candidate.candidate_name }}</td>
+                            <td>{{ candidate.client_name }}</td>
+                            <td>{{ candidate.contract_start_date }} - {{ candidate.contract_end_date }}</td>
+                            <td>${{ candidate.weekly_spread_amount|floatformat:0 }}</td>
+                            <td>
+                                <button type="submit" name="action" value="reactivate" 
+                                        onclick="document.querySelector('[name=candidate_id]').value='{{ candidate.pk }}'"
+                                        class="btn btn-sm btn-success me-1">
+                                    <i class="fas fa-check"></i> Reactivate
+                                </button>
+                                <button type="submit" name="action" value="remove"
+                                        onclick="document.querySelector('[name=candidate_id]').value='{{ candidate.pk }}'"
+                                        class="btn btn-sm btn-danger">
+                                    <i class="fas fa-times"></i> Remove
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <input type="hidden" name="candidate_id" value="">
+        </form>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+            <h4>No items to review</h4>
+            <p class="text-muted">All candidates are up to date!</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

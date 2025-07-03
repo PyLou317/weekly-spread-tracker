@@ -1,0 +1,45 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Upload Report - Staffing Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Upload Weekly Spread Report</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-info-circle"></i> File Format Requirements:</h6>
+                    <ul class="mb-0">
+                        <li>Supported formats: CSV, Excel (.xlsx, .xls)</li>
+                        <li>Required columns: candidate_name, client_name, contract_start_date, contract_end_date, weekly_spread_amount, recruiter_or_account_manager</li>
+                        <li>Dates should be in YYYY-MM-DD format or Excel date format</li>
+                        <li>New candidates will be added automatically</li>
+                        <li>Candidates not in the report will be moved to review queue</li>
+                    </ul>
+                </div>
+                
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.report_file.id_for_label }}" class="form-label">Select Report File</label>
+                        {{ form.report_file }}
+                        <div class="form-text">{{ form.report_file.help_text }}</div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end">
+                        <a href="{% url 'dashboard:dashboard' %}" class="btn btn-secondary me-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload"></i> Upload and Process
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

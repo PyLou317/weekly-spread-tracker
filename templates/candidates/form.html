@@ -1,0 +1,62 @@
+
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Staffing Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.candidate_name.id_for_label }}" class="form-label">Candidate Name</label>
+                            {{ form.candidate_name }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.client_name.id_for_label }}" class="form-label">Client Name</label>
+                            {{ form.client_name }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.contract_start_date.id_for_label }}" class="form-label">Contract Start Date</label>
+                            {{ form.contract_start_date }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.contract_end_date.id_for_label }}" class="form-label">Contract End Date</label>
+                            {{ form.contract_end_date }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.weekly_spread_amount.id_for_label }}" class="form-label">Weekly Spread Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ form.weekly_spread_amount }}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.recruiter_or_account_manager.id_for_label }}" class="form-label">Recruiter/Account Manager</label>
+                            {{ form.recruiter_or_account_manager }}
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end">
+                        <a href="{% url 'candidates:list' %}" class="btn btn-secondary me-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

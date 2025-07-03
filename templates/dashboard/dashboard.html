@@ -1,0 +1,159 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Staffing Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Dashboard</h1>
+    <div>
+        <a href="{% url 'candidates:create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Candidate
+        </a>
+        <a href="{% url 'reports:upload' %}" class="btn btn-secondary">
+            <i class="fas fa-upload"></i> Upload Report
+        </a>
+    </div>
+</div>
+
+<!-- Key Metrics -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card metric-card">
+            <div class="card-body text-center">
+                <h3>{{ total_contractors }}</h3>
+                <p class="mb-0">Active Contractors</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card metric-card">
+            <div class="card-body text-center">
+                <h3>{{ total_clients }}</h3>
+                <p class="mb-0">Unique Clients</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card metric-card">
+            <div class="card-body text-center">
+                <h3>${{ total_weekly_spread|floatformat:0 }}</h3>
+                <p class="mb-0">Weekly Spread</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card metric-card">
+            <div class="card-body text-center">
+                <h3>${{ next_quarter_spread|floatformat:0 }}</h3>
+                <p class="mb-0">Next Quarter Guaranteed</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contract Warnings -->
+{% if expired_contracts or imminent_contracts or quarterly_contracts %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Contract Alerts</h5>
+            </div>
+            <div class="card-body">
+                {% if expired_contracts %}
+                <div class="alert alert-danger">
+                    <strong>Expired Contracts ({{ expired_contracts.count }}):</strong>
+                    {% for contract in expired_contracts %}
+                        <span class="badge bg-danger me-1">{{ contract.candidate_name }} ({{ contract.client_name }})</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% if imminent_contracts %}
+                <div class="alert alert-warning">
+                    <strong>Ending Soon - 2 weeks or less ({{ imminent_contracts.count }}):</strong>
+                    {% for contract in imminent_contracts %}
+                        <span class="badge bg-warning text-dark me-1">{{ contract.candidate_name }} ({{ contract.client_name }})</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% if quarterly_contracts %}
+                <div class="alert warning-yellow">
+                    <strong>Ending This Quarter ({{ quarterly_contracts.count }}):</strong>
+                    {% for contract in quarterly_contracts %}
+                        <span class="badge bg-warning text-dark me-1">{{ contract.candidate_name }} ({{ contract.client_name }})</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Review Queue Alert -->
+{% if review_queue_count > 0 %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <strong><i class="fas fa-clock"></i> Review Queue:</strong>
+            {{ review_queue_count }} candidate{{ review_queue_count|pluralize }} pending review.
+            <a href="{% url 'candidates:review_queue' %}" class="alert-link">Review now</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <!-- Financial Overview -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Financial Overview</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="text-center">
+                            <h4 class="text-success">${{ total_weekly_spread|floatformat:0 }}</h4>
+                            <small class="text-muted">Current Weekly Spread</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center">
+                            <h4 class="text-warning">${{ quarterly_falloffs|floatformat:0 }}</h4>
+                            <small class="text-muted">Quarterly Fall-offs</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Client Breakdown -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Top Clients</h5>
+            </div>
+            <div class="card-body">
+                {% if client_breakdown %}
+                    {% for client in client_breakdown|slice:":5" %}
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>{{ client.client_name }}</span>
+                        <div>
+                            <span class="badge bg-primary me-1">{{ client.count }} contractor{{ client.count|pluralize }}</span>
+                            <span class="badge bg-success">${{ client.total_spread|floatformat:0 }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No clients yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
