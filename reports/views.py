@@ -48,7 +48,17 @@ def process_report(file_path, user):
     try:
         # Try to read as CSV first, then Excel
         if file_path.endswith('.csv'):
-            df = pd.read_csv(file_path)
+            # Try different encodings for CSV files
+            encodings = ['utf-8', 'utf-8-sig', 'latin-1', 'cp1252', 'iso-8859-1']
+            df = None
+            for encoding in encodings:
+                try:
+                    df = pd.read_csv(file_path, encoding=encoding)
+                    break
+                except UnicodeDecodeError:
+                    continue
+            if df is None:
+                raise Exception("Could not decode CSV file with any supported encoding")
         else:
             df = pd.read_excel(file_path)
     except Exception as e:
