@@ -23,6 +23,13 @@ def candidate_list(request):
             ).delete()[0]
             messages.success(request, f'Successfully deleted {deleted_count} contractors.')
             return redirect('candidates:list')
+        elif action == 'delete_all':
+            deleted_count = Candidate.objects.filter(
+                user=request.user,
+                status='active'
+            ).delete()[0]
+            messages.success(request, f'Successfully deleted all {deleted_count} contractors.')
+            return redirect('candidates:list')
     
     # Search functionality
     search = request.GET.get('search')
