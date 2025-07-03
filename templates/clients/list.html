@@ -30,20 +30,12 @@
                                 <td>{{ client.name }}</td>
                                 <td>{{ client.created_at|date:"M d, Y" }}</td>
                                 <td>
-                                    <a href="{% url 'clients:edit' client.pk %}" class="btn btn-sm btn-outline-primary d-none d-md-inline-block" title="Edit">
-                                        <i class="fas fa-edit"></i> Edit
+                                    <a href="{% url 'clients:edit' client.pk %}" class="text-primary me-3" title="Edit">
+                                        <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="{% url 'clients:delete' client.pk %}" class="btn btn-sm btn-outline-danger ms-1 d-none d-md-inline-block" title="Delete">
-                                        <i class="fas fa-trash"></i> Delete
+                                    <a href="{% url 'clients:delete' client.pk %}" class="text-danger" title="Delete">
+                                        <i class="fas fa-trash"></i>
                                     </a>
-                                    <div class="d-md-none">
-                                        <a href="{% url 'clients:edit' client.pk %}" class="text-primary me-3" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <a href="{% url 'clients:delete' client.pk %}" class="text-danger" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}
