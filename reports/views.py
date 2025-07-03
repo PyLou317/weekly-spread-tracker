@@ -48,11 +48,12 @@ def process_report(file_path, user):
     try:
         # Try to read as CSV first, then Excel
         if file_path.endswith('.csv'):
-            # Try different encodings for CSV files
-            encodings = ['utf-8', 'utf-8-sig', 'latin-1', 'cp1252', 'iso-8859-1']
+            # Try different encodings for CSV files with more aggressive BOM handling
+            encodings = ['utf-8-sig', 'utf-16', 'utf-16le', 'utf-16be', 'utf-8', 'latin-1', 'cp1252', 'iso-8859-1']
             df = None
             for encoding in encodings:
                 try:
+                    print(f"Trying encoding: {encoding}")
                     # Try with pandas-compatible error handling
                     try:
                         # For newer pandas versions
@@ -60,7 +61,9 @@ def process_report(file_path, user):
                             file_path, 
                             encoding=encoding,
                             skipinitialspace=True,
-                            on_bad_lines='skip'
+                            on_bad_lines='skip',
+                            sep=None,  # Let pandas auto-detect separator
+                            engine='python'  # More flexible parser
                         )
                     except TypeError:
                         # For older pandas versions
@@ -69,11 +72,22 @@ def process_report(file_path, user):
                             encoding=encoding,
                             skipinitialspace=True,
                             error_bad_lines=False,
-                            warn_bad_lines=False
+                            warn_bad_lines=False,
+                            sep=None,
+                            engine='python'
                         )
-                    break
-                except (UnicodeDecodeError, pd.errors.ParserError):
+                    
+                    # Check if we got reasonable columns
+                    if len(df.columns) > 1 and not any('ÿþ' in str(col) for col in df.columns):
+                        print(f"Successfully read with encoding: {encoding}")
+                        break
+                    else:
+                        df = None
+                        
+                except (UnicodeDecodeError, pd.errors.ParserError) as e:
+                    print(f"Failed with encoding {encoding}: {str(e)}")
                     continue
+                    
             if df is None:
                 raise Exception("Could not decode CSV file with any supported encoding")
         else:
@@ -81,14 +95,57 @@ def process_report(file_path, user):
     except Exception as e:
         raise Exception(f"Could not read file: {str(e)}")
     
+    # Print original columns for debugging
+    print(f"Original columns: {list(df.columns)}")
+    
+    # Clean column names - remove BOM characters and normalize
+    df.columns = [str(col).replace('ÿþ', '').replace('\ufeff', '').strip() for col in df.columns]
+    df.columns = [col.lower().replace(' ', '_') for col in df.columns]
+    
+    print(f"Cleaned columns: {list(df.columns)}")
+    
     # Expected columns (adjust based on actual report format)
     expected_columns = [
         'candidate_name', 'client_name', 'contract_start_date',
         'contract_end_date', 'weekly_spread_amount', 'recruiter_or_account_manager'
     ]
     
-    # Check if required columns exist (case-insensitive)
-    df.columns = df.columns.str.lower().str.replace(' ', '_')
+    # Try to map actual columns to expected columns
+    column_mapping = {}
+    for expected_col in expected_columns:
+        for actual_col in df.columns:
+            # Flexible matching for common variations
+            if expected_col == 'candidate_name':
+                if any(word in actual_col for word in ['candidate', 'name', 'employee', 'worker']):
+                    column_mapping[expected_col] = actual_col
+                    break
+            elif expected_col == 'client_name':
+                if any(word in actual_col for word in ['client', 'company', 'customer']):
+                    column_mapping[expected_col] = actual_col
+                    break
+            elif expected_col == 'contract_start_date':
+                if any(word in actual_col for word in ['start', 'begin', 'commence']) and 'date' in actual_col:
+                    column_mapping[expected_col] = actual_col
+                    break
+            elif expected_col == 'contract_end_date':
+                if any(word in actual_col for word in ['end', 'finish', 'complete']) and 'date' in actual_col:
+                    column_mapping[expected_col] = actual_col
+                    break
+            elif expected_col == 'weekly_spread_amount':
+                if any(word in actual_col for word in ['spread', 'amount', 'weekly', 'profit']):
+                    column_mapping[expected_col] = actual_col
+                    break
+            elif expected_col == 'recruiter_or_account_manager':
+                if any(word in actual_col for word in ['recruiter', 'account', 'manager', 'am']):
+                    column_mapping[expected_col] = actual_col
+                    break
+    
+    print(f"Column mapping: {column_mapping}")
+    
+    # Check if we have essential columns
+    if 'candidate_name' not in column_mapping or 'client_name' not in column_mapping:
+        # If no mapping found, print available columns for user reference
+        raise Exception(f"Could not find required columns. Available columns: {list(df.columns)}. Please ensure your file has candidate name and client name columns.")
     
     new_candidates = 0
     updated_candidates = 0
@@ -110,12 +167,13 @@ def process_report(file_path, user):
     
     for index, row in df.iterrows():
         try:
-            candidate_name = str(row.get('candidate_name', '')).strip()
-            client_name = str(row.get('client_name', '')).strip()
+            # Use column mapping to get the right values
+            candidate_name = str(row.get(column_mapping.get('candidate_name', 'candidate_name'), '')).strip()
+            client_name = str(row.get(column_mapping.get('client_name', 'client_name'), '')).strip()
             
-            print(f"Processing row {index + 1}: {candidate_name} - {client_name}")
+            print(f"Processing row {index + 1}: '{candidate_name}' - '{client_name}'")
             
-            if not candidate_name or not client_name:
+            if not candidate_name or not client_name or candidate_name == 'nan' or client_name == 'nan':
                 print(f"Skipping row {index + 1} due to missing name data")
                 continue
                 
@@ -129,18 +187,24 @@ def process_report(file_path, user):
                 status='active'
             ).first()
             
-            # Parse dates with better error handling
+            # Parse dates with better error handling using column mapping
             try:
-                start_date = pd.to_datetime(row.get('contract_start_date'), errors='coerce')
-                end_date = pd.to_datetime(row.get('contract_end_date'), errors='coerce')
+                start_date_col = column_mapping.get('contract_start_date', 'contract_start_date')
+                end_date_col = column_mapping.get('contract_end_date', 'contract_end_date')
+                spread_col = column_mapping.get('weekly_spread_amount', 'weekly_spread_amount')
+                recruiter_col = column_mapping.get('recruiter_or_account_manager', 'recruiter_or_account_manager')
+                
+                start_date = pd.to_datetime(row.get(start_date_col), errors='coerce')
+                end_date = pd.to_datetime(row.get(end_date_col), errors='coerce')
                 
                 # Check if dates are valid
                 if pd.isna(start_date) or pd.isna(end_date):
                     print(f"Skipping row due to invalid dates: {candidate_name} - {client_name}")
+                    print(f"Start date: {row.get(start_date_col)}, End date: {row.get(end_date_col)}")
                     continue
                     
                 # Parse weekly spread amount
-                weekly_spread = row.get('weekly_spread_amount', 0)
+                weekly_spread = row.get(spread_col, 0)
                 if pd.isna(weekly_spread):
                     weekly_spread = 0
                 
@@ -150,7 +214,7 @@ def process_report(file_path, user):
                     'contract_start_date': start_date.date(),
                     'contract_end_date': end_date.date(),
                     'weekly_spread_amount': float(weekly_spread),
-                    'recruiter_or_account_manager': str(row.get('recruiter_or_account_manager', '')).strip(),
+                    'recruiter_or_account_manager': str(row.get(recruiter_col, '')).strip(),
                 }
             except Exception as e:
                 print(f"Error parsing row data for {candidate_name} - {client_name}: {str(e)}")
