@@ -1,0 +1,106 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Update Contractor - {{ candidate.contractor_name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Update Contractor</h1>
+    <a href="{% url 'alerts:alerts_list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Alerts
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Contractor Information</h5>
+                <small class="text-muted">Update the contract details to resolve alerts</small>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.contractor_name.id_for_label }}" class="form-label">Contractor Name</label>
+                                {{ form.contractor_name }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.client_name.id_for_label }}" class="form-label">Client Name</label>
+                                {{ form.client_name }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.contract_start_date.id_for_label }}" class="form-label">Contract Start Date</label>
+                                {{ form.contract_start_date }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.contract_end_date.id_for_label }}" class="form-label">Contract End Date</label>
+                                {{ form.contract_end_date }}
+                                <div class="form-text">Update this date to extend the contract and resolve alerts</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.weekly_spread_amount.id_for_label }}" class="form-label">Weekly Spread Amount</label>
+                                {{ form.weekly_spread_amount }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.recruiter_or_account_manager.id_for_label }}" class="form-label">Recruiter/Account Manager</label>
+                                {{ form.recruiter_or_account_manager }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Update Contractor
+                        </button>
+                        <a href="{% url 'alerts:alerts_list' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Current Status</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>Contractor:</strong> {{ candidate.contractor_name }}</p>
+                <p><strong>Client:</strong> {{ candidate.client_name }}</p>
+                <p><strong>Current End Date:</strong> {{ candidate.contract_end_date }}</p>
+                <p><strong>Weekly Spread:</strong> ${{ candidate.weekly_spread_amount }}</p>
+                
+                {% if candidate.contract_end_date < today %}
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> Contract Expired
+                    </div>
+                {% elif candidate.contract_end_date <= two_weeks_from_now %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-clock"></i> Contract Ending Soon
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

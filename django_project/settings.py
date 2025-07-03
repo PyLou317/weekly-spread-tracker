@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'candidates',
     'reports',
     'dashboard',
+    'alerts',
 ]
 
 SITE_ID = 1
