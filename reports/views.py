@@ -193,24 +193,10 @@ def process_report(file_path, user):
                     except (ValueError, TypeError):
                         weekly_spread = 0
                 
-                # Set default dates (user will need to update these)
+                # Set default dates for user to edit manually
+                # Using today's date as a reasonable default
                 start_date = datetime.now().date()
                 end_date = datetime.now().date()
-                
-                # Check if optional date fields exist in the report
-                if 'contract_start_date' in column_mapping:
-                    start_date_col = column_mapping['contract_start_date']
-                    if pd.notna(row.get(start_date_col)):
-                        parsed_start = pd.to_datetime(row.get(start_date_col), errors='coerce')
-                        if not pd.isna(parsed_start):
-                            start_date = parsed_start.date()
-                
-                if 'contract_end_date' in column_mapping:
-                    end_date_col = column_mapping['contract_end_date']
-                    if pd.notna(row.get(end_date_col)):
-                        parsed_end = pd.to_datetime(row.get(end_date_col), errors='coerce')
-                        if not pd.isna(parsed_end):
-                            end_date = parsed_end.date()
                 
                 # Get recruiter info if available
                 recruiter = ''
