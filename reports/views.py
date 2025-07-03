@@ -185,6 +185,13 @@ def process_report(file_path, user):
                 weekly_spread = row.get(spread_col, 0)
                 if pd.isna(weekly_spread):
                     weekly_spread = 0
+                else:
+                    # Clean currency formatting (remove $, commas, spaces)
+                    weekly_spread = str(weekly_spread).replace('$', '').replace(',', '').strip()
+                    try:
+                        weekly_spread = float(weekly_spread)
+                    except (ValueError, TypeError):
+                        weekly_spread = 0
                 
                 # Set default dates (user will need to update these)
                 start_date = datetime.now().date()
