@@ -166,6 +166,12 @@ def process_report(file_path, user):
             
             print(f"Processing row {index + 1}: '{contractor_name}' - '{client_name}'")
             
+            # Skip total/summary rows
+            if (contractor_name.lower() in ['total', 'grand total', 'subtotal', 'summary'] or 
+                client_name.lower() in ['total', 'grand total', 'subtotal', 'summary']):
+                print(f"Skipping row {index + 1} - appears to be a total/summary row")
+                continue
+            
             if not contractor_name or not client_name or contractor_name == 'nan' or client_name == 'nan':
                 print(f"Skipping row {index + 1} due to missing name data")
                 continue
