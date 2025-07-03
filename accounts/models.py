@@ -22,3 +22,18 @@ class UserProfile(models.Model):
     
     def is_onboarding_complete(self):
         return self.full_name and self.role and self.phone_number
+    
+    def formatted_phone_number(self):
+        """Format phone number as (XXX) XXX-XXXX"""
+        if not self.phone_number:
+            return "Not set"
+        
+        # Remove all non-digit characters
+        digits = ''.join(filter(str.isdigit, self.phone_number))
+        
+        if len(digits) == 10:
+            return f"({digits[:3]}) {digits[3:6]}-{digits[6:]}"
+        elif len(digits) == 11 and digits[0] == '1':
+            return f"({digits[1:4]}) {digits[4:7]}-{digits[7:]}"
+        else:
+            return self.phone_number  # Return as-is if not standard format
