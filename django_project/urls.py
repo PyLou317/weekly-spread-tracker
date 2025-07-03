@@ -22,6 +22,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('', include('dashboard.urls')),
     path('candidates/', include('candidates.urls')),
+    path('clients/', include('clients.urls')),
     path('reports/', include('reports.urls')),
     path('alerts/', include('alerts.urls')),
 ]

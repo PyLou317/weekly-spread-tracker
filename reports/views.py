@@ -1,5 +1,3 @@
-
-
 import pandas as pd
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -11,6 +9,7 @@ from datetime import datetime
 import os
 from typing import Type
 from candidates.models import Candidate
+from clients.models import Client  # Import the Client model
 
 
 @login_required
@@ -19,29 +18,29 @@ def upload_report(request):
         form = ReportUploadForm(request.POST, request.FILES)
         if form.is_valid():
             uploaded_file = request.FILES['report_file']
-            
+
             # Save the file temporarily
             file_name = default_storage.save(f'temp/{uploaded_file.name}', ContentFile(uploaded_file.read()))
             file_path = default_storage.path(file_name)
-            
+
             try:
                 # Process the uploaded report
                 result = process_report(file_path, request.user)
-                
+
                 # Clean up the temporary file
                 default_storage.delete(file_name)
-                
+
                 messages.success(request, f"Report processed successfully! {result['message']}")
                 return redirect('dashboard:dashboard')
-                
+
             except Exception as e:
                 # Clean up the temporary file on error
                 default_storage.delete(file_name)
                 messages.error(request, f"Error processing report: {str(e)}")
-                
+
     else:
         form = ReportUploadForm()
-    
+
     return render(request, 'reports/upload.html', {'form': form})
 
 
@@ -80,37 +79,37 @@ def process_report(file_path, user):
                             sep=None,
                             engine='python'
                         )
-                    
+
                     # Check if we got reasonable columns
                     if len(df.columns) > 1 and not any('ÿþ' in str(col) for col in df.columns):
                         print(f"Successfully read with encoding: {encoding}")
                         break
                     else:
                         df = None
-                        
+
                 except (UnicodeDecodeError, pd.errors.ParserError) as e:
                     print(f"Failed with encoding {encoding}: {str(e)}")
                     continue
-                    
+
             if df is None:
                 raise Exception("Could not decode CSV file with any supported encoding")
         else:
             df = pd.read_excel(file_path)
     except Exception as e:
         raise Exception(f"Could not read file: {str(e)}") from None
-    
+
     # Print original columns for debugging
     print(f"Original columns: {list(df.columns)}")
-    
+
     # Clean column names - remove BOM characters and normalize
     df.columns = [str(col).replace('ÿþ', '').replace('\ufeff', '').strip() for col in df.columns]
     df.columns = [col.lower().replace(' ', '_') for col in df.columns]
-    
+
     print(f"Cleaned columns: {list(df.columns)}")
-    
+
     # Required columns (only these are essential)
     required_columns = ['contractor_name', 'client_name', 'weekly_spread_amount']
-    
+
     # Try to map actual columns to expected columns
     column_mapping = {}
     for actual_col in df.columns:
@@ -132,52 +131,60 @@ def process_report(file_path, user):
             column_mapping['contract_end_date'] = actual_col
         elif any(word in actual_col for word in ['recruiter', 'account', 'manager', 'am']):
             column_mapping['recruiter_or_account_manager'] = actual_col
-    
+
     print(f"Column mapping: {column_mapping}")
-    
+
     # Check if we have essential columns
     missing_columns = [col for col in required_columns if col not in column_mapping]
     if missing_columns:
         raise Exception(f"Could not find required columns: {missing_columns}. Available columns: {list(df.columns)}. Please ensure your file has contractor/candidate name, client/customer name, and spread amount columns.")
-    
+
     new_candidates = 0
     updated_candidates = 0
     moved_to_review = 0
-    
+
     # Get existing active candidates for this user
     existing_candidates = set(
         Candidate.objects.filter(user=user, status='active').values_list(
             'contractor_name', 'client_name'
         )
     )
-    
+
     # Track candidates found in the report
     report_candidates = set()
-    
+
     # Process each row in the report
     print(f"Processing {len(df)} rows from report")
     print(f"Columns found: {list(df.columns)}")
-    
+
     for index, row in df.iterrows():
         try:
             # Use column mapping to get the right values
             contractor_name = str(row.get(column_mapping.get('contractor_name', 'contractor_name'), '')).strip()
             client_name = str(row.get(column_mapping.get('client_name', 'client_name'), '')).strip()
-            
+
             print(f"Processing row {index + 1}: '{contractor_name}' - '{client_name}'")
-            
+
             # Skip total/summary rows
             if (contractor_name.lower() in ['total', 'grand total', 'subtotal', 'summary'] or 
                 client_name.lower() in ['total', 'grand total', 'subtotal', 'summary']):
                 print(f"Skipping row {index + 1} - appears to be a total/summary row")
                 continue
-            
+
             if not contractor_name or not client_name or contractor_name == 'nan' or client_name == 'nan':
                 print(f"Skipping row {index + 1} due to missing name data")
                 continue
-                
+
             report_candidates.add((contractor_name, client_name))
-            
+
+            # Create client if it doesn't exist
+            client_obj, created = Client.objects.get_or_create(
+                user=user,
+                name=client_name
+            )
+            if created:
+                print(f"Created new client: {client_name}")
+
             # Check if candidate already exists
             existing_candidate = Candidate.objects.filter(
                 user=user,
@@ -185,7 +192,7 @@ def process_report(file_path, user):
                 client_name__iexact=client_name,
                 status='active'
             ).first()
-            
+
             # Parse data with defaults for missing fields
             try:
                 # Parse weekly spread amount (required field)
@@ -200,18 +207,18 @@ def process_report(file_path, user):
                         weekly_spread = float(weekly_spread)
                     except (ValueError, TypeError):
                         weekly_spread = 0
-                
+
                 # Set default dates for user to edit manually
                 # Using today's date as a reasonable default
                 start_date = datetime.now().date()
                 end_date = datetime.now().date()
-                
+
                 # Get recruiter info if available
                 recruiter = ''
                 if 'recruiter_or_account_manager' in column_mapping:
                     recruiter_col = column_mapping['recruiter_or_account_manager']
                     recruiter = str(row.get(recruiter_col, '')).strip()
-                
+
                 candidate_data = {
                     'contractor_name': contractor_name,
                     'client_name': client_name,
@@ -223,7 +230,7 @@ def process_report(file_path, user):
             except Exception as e:
                 print(f"Error parsing row data for {contractor_name} - {client_name}: {str(e)}")
                 continue
-            
+
             if existing_candidate:
                 # Update existing candidate
                 for field, value in candidate_data.items():
@@ -240,10 +247,10 @@ def process_report(file_path, user):
                 )
                 new_candidates += 1
                 print(f"Created new candidate: {contractor_name} (ID: {new_candidate.pk})")
-                
+
         except Exception as e:
             continue  # Skip problematic rows
-    
+
     # Move candidates not in the report to review queue
     candidates_not_in_report = existing_candidates - report_candidates
     for contractor_name, client_name in candidates_not_in_report:
@@ -254,8 +261,7 @@ def process_report(file_path, user):
             status='active'
         ).update(status='review')
         moved_to_review += 1
-    
+
     return {
         'message': f"Added {new_candidates} new candidates, updated {updated_candidates} existing candidates, moved {moved_to_review} to review queue."
     }
-

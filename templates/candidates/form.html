@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 
 {% block title %}{{ title }} - Staffing Tracker{% endblock %}
@@ -13,18 +12,30 @@
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
-                    
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="{{ form.candidate_name.id_for_label }}" class="form-label">Candidate Name</label>
                             {{ form.candidate_name }}
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="{{ form.client_name.id_for_label }}" class="form-label">Client Name</label>
-                            {{ form.client_name }}
+                            <label for="{{ form.client.id_for_label }}" class="form-label">Client</label>
+                            <div class="d-flex">
+                                {{ form.client }}
+                                <a href="{% url 'clients:create' %}" class="btn btn-outline-primary ms-2" target="_blank">
+                                    <i class="fas fa-plus"></i> Add Client
+                                </a>
+                            </div>
+                            {% if form.client.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.client.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="{{ form.contract_start_date.id_for_label }}" class="form-label">Contract Start Date</label>
@@ -35,7 +46,7 @@
                             {{ form.contract_end_date }}
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="{{ form.weekly_spread_amount.id_for_label }}" class="form-label">Weekly Spread Amount</label>
@@ -49,7 +60,7 @@
                             {{ form.recruiter_or_account_manager }}
                         </div>
                     </div>
-                    
+
                     <div class="d-flex justify-content-end">
                         <a href="{% url 'candidates:list' %}" class="btn btn-secondary me-2">Cancel</a>
                         <button type="submit" class="btn btn-primary">Save</button>
