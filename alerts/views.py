@@ -59,7 +59,7 @@ def update_contractor(request, pk):
     candidate = get_object_or_404(Candidate, pk=pk, user=request.user)
     
     if request.method == 'POST':
-        form = CandidateForm(request.POST, instance=candidate)
+        form = CandidateForm(request.POST, instance=candidate, user=request.user)
         if form.is_valid():
             form.save()
             
@@ -72,7 +72,7 @@ def update_contractor(request, pk):
             messages.success(request, f'Contractor {candidate.contractor_name} updated successfully!')
             return redirect('alerts:alerts_list')
     else:
-        form = CandidateForm(instance=candidate)
+        form = CandidateForm(instance=candidate, user=request.user)
     
     return render(request, 'alerts/update_contractor.html', {
         'form': form,
