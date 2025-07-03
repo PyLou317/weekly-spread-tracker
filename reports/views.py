@@ -105,12 +105,18 @@ def process_report(file_path, user):
     report_candidates = set()
     
     # Process each row in the report
-    for _, row in df.iterrows():
+    print(f"Processing {len(df)} rows from report")
+    print(f"Columns found: {list(df.columns)}")
+    
+    for index, row in df.iterrows():
         try:
             candidate_name = str(row.get('candidate_name', '')).strip()
             client_name = str(row.get('client_name', '')).strip()
             
+            print(f"Processing row {index + 1}: {candidate_name} - {client_name}")
+            
             if not candidate_name or not client_name:
+                print(f"Skipping row {index + 1} due to missing name data")
                 continue
                 
             report_candidates.add((candidate_name, client_name))
@@ -123,14 +129,32 @@ def process_report(file_path, user):
                 status='active'
             ).first()
             
-            candidate_data = {
-                'candidate_name': candidate_name,
-                'client_name': client_name,
-                'contract_start_date': pd.to_datetime(row.get('contract_start_date')).date(),
-                'contract_end_date': pd.to_datetime(row.get('contract_end_date')).date(),
-                'weekly_spread_amount': float(row.get('weekly_spread_amount', 0)),
-                'recruiter_or_account_manager': str(row.get('recruiter_or_account_manager', '')).strip(),
-            }
+            # Parse dates with better error handling
+            try:
+                start_date = pd.to_datetime(row.get('contract_start_date'), errors='coerce')
+                end_date = pd.to_datetime(row.get('contract_end_date'), errors='coerce')
+                
+                # Check if dates are valid
+                if pd.isna(start_date) or pd.isna(end_date):
+                    print(f"Skipping row due to invalid dates: {candidate_name} - {client_name}")
+                    continue
+                    
+                # Parse weekly spread amount
+                weekly_spread = row.get('weekly_spread_amount', 0)
+                if pd.isna(weekly_spread):
+                    weekly_spread = 0
+                
+                candidate_data = {
+                    'candidate_name': candidate_name,
+                    'client_name': client_name,
+                    'contract_start_date': start_date.date(),
+                    'contract_end_date': end_date.date(),
+                    'weekly_spread_amount': float(weekly_spread),
+                    'recruiter_or_account_manager': str(row.get('recruiter_or_account_manager', '')).strip(),
+                }
+            except Exception as e:
+                print(f"Error parsing row data for {candidate_name} - {client_name}: {str(e)}")
+                continue
             
             if existing_candidate:
                 # Update existing candidate
@@ -138,14 +162,16 @@ def process_report(file_path, user):
                     setattr(existing_candidate, field, value)
                 existing_candidate.save()
                 updated_candidates += 1
+                print(f"Updated existing candidate: {candidate_name}")
             else:
                 # Create new candidate
-                Candidate.objects.create(
+                new_candidate = Candidate.objects.create(
                     user=user,
                     status='active',
                     **candidate_data
                 )
                 new_candidates += 1
+                print(f"Created new candidate: {candidate_name} (ID: {new_candidate.pk})")
                 
         except Exception as e:
             continue  # Skip problematic rows
