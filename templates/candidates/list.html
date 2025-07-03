@@ -25,6 +25,17 @@
     </div>
 </div>
 
+<!-- Batch Actions -->
+<div class="mb-3">
+    <form method="post" id="batchForm">
+        {% csrf_token %}
+        <button type="submit" name="action" value="delete" class="btn btn-danger" id="deleteSelected" style="display: none;" 
+                onclick="return confirm('Are you sure you want to delete the selected contractors?')">
+            <i class="fas fa-trash"></i> Delete Selected
+        </button>
+    </form>
+</div>
+
 <!-- Candidates Table -->
 <div class="card">
     <div class="card-body">
@@ -48,7 +59,10 @@
                 <tbody>
                     {% for candidate in page_obj %}
                     <tr>
-                        <td>{{ candidate.candidate_name }}</td>
+                        <td>
+                            <input type="checkbox" name="selected_candidates" value="{{ candidate.pk }}" class="form-check-input candidate-checkbox" form="batchForm">
+                        </td>
+                        <td>{{ candidate.contractor_name }}</td>
                         <td>{{ candidate.client_name }}</td>
                         <td>
                             {{ candidate.contract_start_date }} - {{ candidate.contract_end_date }}
@@ -116,4 +130,41 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const candidateCheckboxes = document.querySelectorAll('.candidate-checkbox');
+    const deleteButton = document.getElementById('deleteSelected');
+    
+    // Select/deselect all functionality
+    selectAllCheckbox.addEventListener('change', function() {
+        candidateCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateDeleteButton();
+    });
+    
+    // Individual checkbox change
+    candidateCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            updateSelectAllState();
+            updateDeleteButton();
+        });
+    });
+    
+    function updateSelectAllState() {
+        const checkedCount = document.querySelectorAll('.candidate-checkbox:checked').length;
+        const totalCount = candidateCheckboxes.length;
+        
+        selectAllCheckbox.checked = checkedCount === totalCount;
+        selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < totalCount;
+    }
+    
+    function updateDeleteButton() {
+        const checkedCount = document.querySelectorAll('.candidate-checkbox:checked').length;
+        deleteButton.style.display = checkedCount > 0 ? 'inline-block' : 'none';
+    }
+});
+</script>
 {% endblock %}
