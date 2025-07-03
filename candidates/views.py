@@ -70,8 +70,8 @@ def candidate_create(request):
 
     return render(request, 'candidates/form.html', {
         'form': form,
-        'title': 'Add New Candidate',
-        'submit_text': 'Add Candidate'
+        'title': 'Add New Contractor',
+        'submit_text': 'Add Contractor'
     })
 
 
@@ -90,8 +90,8 @@ def candidate_edit(request, pk):
 
     return render(request, 'candidates/form.html', {
         'form': form,
-        'title': 'Edit Candidate',
-        'submit_text': 'Update Candidate',
+        'title': 'Edit Contractor',
+        'submit_text': 'Update Contractor',
         'candidate': candidate
     })
 
