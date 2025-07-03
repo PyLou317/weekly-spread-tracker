@@ -64,17 +64,24 @@ def update_contractor(request, pk):
         print(f"Form is valid: {form.is_valid()}")
         if not form.is_valid():
             print(f"Form errors: {form.errors}")
-        if form.is_valid():
-            form.save()
-            
-            # Mark related alerts as resolved if end date was updated
-            Alert.objects.filter(
-                candidate=candidate,
-                is_resolved=False
-            ).update(is_resolved=True, resolved_at=timezone.now())
-            
-            messages.success(request, f'Contractor {candidate.contractor_name} updated successfully!')
-            return redirect('alerts:alerts_list')
+            print(f"Form non-field errors: {form.non_field_errors()}")
+            for field, errors in form.errors.items():
+                print(f"Field {field} errors: {errors}")
+        else:
+            try:
+                form.save()
+                
+                # Mark related alerts as resolved if end date was updated
+                Alert.objects.filter(
+                    candidate=candidate,
+                    is_resolved=False
+                ).update(is_resolved=True, resolved_at=timezone.now())
+                
+                messages.success(request, f'Contractor {candidate.contractor_name} updated successfully!')
+                return redirect('alerts:alerts_list')
+            except Exception as e:
+                print(f"Save error: {e}")
+                messages.error(request, f'Error saving contractor: {e}')
     else:
         form = CandidateForm(instance=candidate, user=request.user)
     

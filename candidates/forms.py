@@ -41,7 +41,7 @@ class CandidateForm(forms.ModelForm):
 
     def save(self, commit=True):
         candidate = super().save(commit=False)
-        if self.cleaned_data['client']:
+        if self.cleaned_data.get('client'):
             candidate.client_name = self.cleaned_data['client'].name
         if commit:
             candidate.save()
