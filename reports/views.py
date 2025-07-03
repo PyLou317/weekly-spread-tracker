@@ -108,53 +108,35 @@ def process_report(file_path, user):
     
     print(f"Cleaned columns: {list(df.columns)}")
     
-    # Expected columns (adjust based on actual report format)
-    expected_columns = [
-        'candidate_name', 'client_name', 'contract_start_date',
-        'contract_end_date', 'weekly_spread_amount', 'recruiter_or_account_manager'
-    ]
+    # Required columns (only these are essential)
+    required_columns = ['candidate_name', 'client_name', 'weekly_spread_amount']
     
     # Try to map actual columns to expected columns
     column_mapping = {}
-    for expected_col in expected_columns:
-        for actual_col in df.columns:
-            # Flexible matching for common variations
-            if expected_col == 'candidate_name':
-                if any(word in actual_col for word in ['contractor', 'candidate',
-                                                       'employee', 'worker', 'name'
-                                                      ]):
-                    column_mapping[expected_col] = actual_col
-                    break
-            elif expected_col == 'client_name':
-                if any(word in actual_col for word in ['customer', 'client']):
-                    column_mapping[expected_col] = actual_col
-                    break
-            elif expected_col == 'contract_start_date':
-                if any(word in actual_col for word in ['start', 'begin',
-                                                'commence']) and 'date' in actual_col:
-                    column_mapping[expected_col] = actual_col
-                    break
-            elif expected_col == 'contract_end_date':
-                if any(word in actual_col for word in ['end', 'finish', 
-                            'complete', 'weekending']) and 'date' in actual_col:
-                    column_mapping[expected_col] = actual_col
-                    break
-            elif expected_col == 'weekly_spread_amount':
-                if any(word in actual_col for word in ['spread',
-                                    'expected_net_spread', 'net_spread', 'amount']):
-                    column_mapping[expected_col] = actual_col
-                    break
-            elif expected_col == 'recruiter_or_account_manager':
-                if any(word in actual_col for word in ['recruiter', 'account', 'manager', 'am']):
-                    column_mapping[expected_col] = actual_col
-                    break
+    for actual_col in df.columns:
+        # Flexible matching for contractor/candidate name
+        if any(word in actual_col for word in ['contractor', 'candidate', 'employee', 'worker']):
+            column_mapping['candidate_name'] = actual_col
+        # Flexible matching for client/customer name
+        elif any(word in actual_col for word in ['customer', 'client']):
+            column_mapping['client_name'] = actual_col
+        # Flexible matching for spread amount
+        elif any(word in actual_col for word in ['spread', 'expected_net_spread', 'net_spread', 'amount']):
+            column_mapping['weekly_spread_amount'] = actual_col
+        # Optional fields (if they exist in the report)
+        elif any(word in actual_col for word in ['start', 'begin', 'commence']) and 'date' in actual_col:
+            column_mapping['contract_start_date'] = actual_col
+        elif any(word in actual_col for word in ['end', 'finish', 'complete', 'weekending']) and 'date' in actual_col:
+            column_mapping['contract_end_date'] = actual_col
+        elif any(word in actual_col for word in ['recruiter', 'account', 'manager', 'am']):
+            column_mapping['recruiter_or_account_manager'] = actual_col
     
     print(f"Column mapping: {column_mapping}")
     
     # Check if we have essential columns
-    if 'candidate_name' not in column_mapping or 'client_name' not in column_mapping:
-        # If no mapping found, print available columns for user reference
-        raise Exception(f"Could not find required columns. Available columns: {list(df.columns)}. Please ensure your file has candidate name and client name columns.")
+    missing_columns = [col for col in required_columns if col not in column_mapping]
+    if missing_columns:
+        raise Exception(f"Could not find required columns: {missing_columns}. Available columns: {list(df.columns)}. Please ensure your file has contractor/candidate name, client/customer name, and spread amount columns.")
     
     new_candidates = 0
     updated_candidates = 0
@@ -196,44 +178,46 @@ def process_report(file_path, user):
                 status='active'
             ).first()
             
-            # Parse dates with better error handling using column mapping
+            # Parse data with defaults for missing fields
             try:
-                start_date_col = column_mapping.get('contract_start_date', 'contract_start_date')
-                end_date_col = column_mapping.get('contract_end_date', 'contract_end_date')
-                spread_col = column_mapping.get('weekly_spread_amount', 'weekly_spread_amount')
-                recruiter_col = column_mapping.get('recruiter_or_account_manager', 'recruiter_or_account_manager')
-                
-                # For weekly spread reports, we might not have contract start/end dates
-                if start_date_col in row and pd.notna(row.get(start_date_col)):
-                    start_date = pd.to_datetime(row.get(start_date_col), errors='coerce')
-                else:
-                    # Default to beginning of current year if no start date
-                    start_date = pd.to_datetime(f"{datetime.now().year}-01-01")
-                
-                if end_date_col in row and pd.notna(row.get(end_date_col)):
-                    end_date = pd.to_datetime(row.get(end_date_col), errors='coerce')
-                else:
-                    # Default to end of current year if no end date
-                    end_date = pd.to_datetime(f"{datetime.now().year}-12-31")
-                
-                # Check if dates are valid
-                if pd.isna(start_date) or pd.isna(end_date):
-                    print(f"Skipping row due to invalid dates: {candidate_name} - {client_name}")
-                    print(f"Start date: {row.get(start_date_col)}, End date: {row.get(end_date_col)}")
-                    continue
-                    
-                # Parse weekly spread amount
+                # Parse weekly spread amount (required field)
+                spread_col = column_mapping.get('weekly_spread_amount')
                 weekly_spread = row.get(spread_col, 0)
                 if pd.isna(weekly_spread):
                     weekly_spread = 0
                 
+                # Set default dates (user will need to update these)
+                start_date = datetime.now().date()
+                end_date = datetime.now().date()
+                
+                # Check if optional date fields exist in the report
+                if 'contract_start_date' in column_mapping:
+                    start_date_col = column_mapping['contract_start_date']
+                    if pd.notna(row.get(start_date_col)):
+                        parsed_start = pd.to_datetime(row.get(start_date_col), errors='coerce')
+                        if not pd.isna(parsed_start):
+                            start_date = parsed_start.date()
+                
+                if 'contract_end_date' in column_mapping:
+                    end_date_col = column_mapping['contract_end_date']
+                    if pd.notna(row.get(end_date_col)):
+                        parsed_end = pd.to_datetime(row.get(end_date_col), errors='coerce')
+                        if not pd.isna(parsed_end):
+                            end_date = parsed_end.date()
+                
+                # Get recruiter info if available
+                recruiter = ''
+                if 'recruiter_or_account_manager' in column_mapping:
+                    recruiter_col = column_mapping['recruiter_or_account_manager']
+                    recruiter = str(row.get(recruiter_col, '')).strip()
+                
                 candidate_data = {
                     'candidate_name': candidate_name,
                     'client_name': client_name,
-                    'contract_start_date': start_date.date(),
-                    'contract_end_date': end_date.date(),
+                    'contract_start_date': start_date,
+                    'contract_end_date': end_date,
                     'weekly_spread_amount': float(weekly_spread),
-                    'recruiter_or_account_manager': str(row.get(recruiter_col, '')).strip(),
+                    'recruiter_or_account_manager': recruiter,
                 }
             except Exception as e:
                 print(f"Error parsing row data for {candidate_name} - {client_name}: {str(e)}")
