@@ -38,6 +38,11 @@ class CandidateForm(forms.ModelForm):
                 self.fields['client'].initial = client
             except Client.DoesNotExist:
                 pass
+        
+        # Make sure all fields are required except status which has a default
+        for field_name, field in self.fields.items():
+            if field_name != 'status':
+                field.required = True
 
     def save(self, commit=True):
         candidate = super().save(commit=False)

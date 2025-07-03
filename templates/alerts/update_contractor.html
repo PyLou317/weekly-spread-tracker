@@ -19,9 +19,30 @@
                 <small class="text-muted">Update the contract details to resolve alerts</small>
             </div>
             <div class="card-body">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                
                 {% if form.non_field_errors %}
                     <div class="alert alert-danger">
                         {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+                
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <strong>Please correct the following errors:</strong>
+                        <ul class="mb-0">
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <li>{{ field|title }}: {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
                     </div>
                 {% endif %}
                 
@@ -133,12 +154,26 @@
                     </div>
                     
                     <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
                             <i class="fas fa-save"></i> Update Contractor
                         </button>
                         <a href="{% url 'alerts:alerts_list' %}" class="btn btn-secondary">Cancel</a>
                     </div>
                 </form>
+                
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const form = document.querySelector('form');
+                    const submitBtn = document.getElementById('submitBtn');
+                    
+                    if (form && submitBtn) {
+                        form.addEventListener('submit', function(e) {
+                            submitBtn.disabled = true;
+                            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                        });
+                    }
+                });
+                </script>
             </div>
         </div>
     </div>

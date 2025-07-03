@@ -67,6 +67,7 @@ def update_contractor(request, pk):
             print(f"Form non-field errors: {form.non_field_errors()}")
             for field, errors in form.errors.items():
                 print(f"Field {field} errors: {errors}")
+                messages.error(request, f"Error in {field}: {', '.join(errors)}")
         else:
             try:
                 form.save()
