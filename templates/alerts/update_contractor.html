@@ -46,8 +46,9 @@
                     </div>
                 {% endif %}
                 
-                <form method="post">
+                <form method="post" action="">
                     {% csrf_token %}
+                    <input type="hidden" name="form_submitted" value="1">
                     
                     <div class="row">
                         <div class="col-md-6">
@@ -163,14 +164,28 @@
                 
                 <script>
                 document.addEventListener('DOMContentLoaded', function() {
-                    const form = document.querySelector('form');
+                    const form = document.querySelector('form[method="post"]');
                     const submitBtn = document.getElementById('submitBtn');
+                    
+                    console.log('Form found:', form);
+                    console.log('Submit button found:', submitBtn);
                     
                     if (form && submitBtn) {
                         form.addEventListener('submit', function(e) {
+                            console.log('Form submitting...');
                             submitBtn.disabled = true;
                             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                            
+                            // Re-enable button after a timeout in case of errors
+                            setTimeout(function() {
+                                if (submitBtn.disabled) {
+                                    submitBtn.disabled = false;
+                                    submitBtn.innerHTML = '<i class="fas fa-save"></i> Update Contractor';
+                                }
+                            }, 10000);
                         });
+                    } else {
+                        console.error('Form or submit button not found');
                     }
                 });
                 </script>

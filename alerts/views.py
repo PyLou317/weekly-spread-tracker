@@ -57,17 +57,25 @@ def alerts_list(request):
 def update_contractor(request, pk):
     """Update contractor information from alerts page"""
     candidate = get_object_or_404(Candidate, pk=pk, user=request.user)
+    print(f"Candidate found: {candidate.contractor_name} (ID: {candidate.pk})")
+    print(f"Candidate fields: contractor_name={candidate.contractor_name}, client_name={candidate.client_name}, start={candidate.contract_start_date}, end={candidate.contract_end_date}, amount={candidate.weekly_spread_amount}, recruiter={candidate.recruiter_or_account_manager}, status={candidate.status}")
     
     if request.method == 'POST':
         form = CandidateForm(request.POST, instance=candidate, user=request.user)
-        print(f"Form data: {request.POST}")
+        print(f"POST data received: {dict(request.POST)}")
+        print(f"Form instance data before validation: {form.instance.__dict__}")
         print(f"Form is valid: {form.is_valid()}")
+        
         if not form.is_valid():
-            print(f"Form errors: {form.errors}")
-            print(f"Form non-field errors: {form.non_field_errors()}")
+            print(f"Form errors: {dict(form.errors)}")
+            print(f"Form non-field errors: {list(form.non_field_errors())}")
+            
+            # Add detailed error messages
             for field, errors in form.errors.items():
-                print(f"Field {field} errors: {errors}")
-                messages.error(request, f"Error in {field}: {', '.join(errors)}")
+                field_label = form.fields.get(field, {}).label or field
+                error_messages = [str(error) for error in errors]
+                print(f"Field '{field}' ({field_label}) errors: {error_messages}")
+                messages.error(request, f"{field_label}: {'; '.join(error_messages)}")
         else:
             try:
                 form.save()
@@ -86,9 +94,14 @@ def update_contractor(request, pk):
     else:
         form = CandidateForm(instance=candidate, user=request.user)
     
+    today = date.today()
+    two_weeks_from_now = today + timedelta(days=14)
+    
     return render(request, 'alerts/update_contractor.html', {
         'form': form,
         'candidate': candidate,
+        'today': today,
+        'two_weeks_from_now': two_weeks_from_now,
     })
 
 

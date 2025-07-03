@@ -39,10 +39,14 @@ class CandidateForm(forms.ModelForm):
             except Client.DoesNotExist:
                 pass
         
-        # Make sure all fields are required except status which has a default
-        for field_name, field in self.fields.items():
-            if field_name != 'status':
-                field.required = True
+        # Set reasonable field requirements
+        self.fields['contractor_name'].required = True
+        self.fields['client'].required = True
+        self.fields['contract_start_date'].required = True
+        self.fields['contract_end_date'].required = True
+        self.fields['weekly_spread_amount'].required = True
+        self.fields['recruiter_or_account_manager'].required = False  # This might be optional
+        self.fields['status'].required = False  # Has default
 
     def save(self, commit=True):
         candidate = super().save(commit=False)
