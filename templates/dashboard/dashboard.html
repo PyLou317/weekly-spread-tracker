@@ -18,7 +18,7 @@
 
 <!-- Key Metrics -->
 <div class="row mb-4">
-    <div class="col-lg-2 col-md-4 mb-3">
+    <div class="col-md-3 mb-3 mb-md-0">
         <div class="card metric-card">
             <div class="card-body text-center">
                 <h3>{{ total_contractors }}</h3>
@@ -26,7 +26,7 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-2 col-md-4 mb-3">
+    <div class="col-md-3 mb-3 mb-md-0">
         <div class="card metric-card">
             <div class="card-body text-center">
                 <h3>{{ total_clients }}</h3>
@@ -34,27 +34,19 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-4 mb-3">
+    <div class="col-md-3 mb-3 mb-md-0">
         <div class="card metric-card">
             <div class="card-body text-center">
                 <h3>${{ total_weekly_spread|floatformat:0 }}</h3>
-                <p class="mb-0">Current Weekly Spread</p>
+                <p class="mb-0">Weekly Spread</p>
             </div>
         </div>
     </div>
-    <div class="col-lg-2 col-md-6 mb-3">
-        <div class="card metric-card bg-warning text-dark">
-            <div class="card-body text-center">
-                <h3>${{ quarterly_falloffs|floatformat:0 }}</h3>
-                <p class="mb-0">Quarter Fall-offs</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6 mb-3">
-        <div class="card metric-card bg-success">
+    <div class="col-md-3">
+        <div class="card metric-card">
             <div class="card-body text-center">
                 <h3>${{ next_quarter_spread|floatformat:0 }}</h3>
-                <p class="mb-0">Guaranteed Next Quarter</p>
+                <p class="mb-0">Next Quarter Guaranteed</p>
             </div>
         </div>
     </div>
