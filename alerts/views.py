@@ -60,6 +60,10 @@ def update_contractor(request, pk):
     
     if request.method == 'POST':
         form = CandidateForm(request.POST, instance=candidate, user=request.user)
+        print(f"Form data: {request.POST}")
+        print(f"Form is valid: {form.is_valid()}")
+        if not form.is_valid():
+            print(f"Form errors: {form.errors}")
         if form.is_valid():
             form.save()
             
