@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block title %}Dashboard - Staffing Tracker{% endblock %}
 
@@ -26,7 +27,7 @@
     <div class="col-md-3 mb-3 mb-md-0">
         <div class="card metric-card">
             <div class="card-body text-center">
-                <h3>{{ total_contractors }}</h3>
+                <h3>{{ total_contractors|floatformat:0 }}</h3>
                 <p class="mb-0">Active Contractors</p>
             </div>
         </div>
@@ -34,7 +35,7 @@
     <div class="col-md-3 mb-3 mb-md-0">
         <div class="card metric-card">
             <div class="card-body text-center">
-                <h3>{{ total_clients }}</h3>
+                <h3>{{ total_clients|floatformat:0 }}</h3>
                 <p class="mb-0">Unique Clients</p>
             </div>
         </div>
@@ -42,7 +43,7 @@
     <div class="col-md-3 mb-3 mb-md-0">
         <div class="card metric-card">
             <div class="card-body text-center">
-                <h3>${{ total_weekly_spread|floatformat:0 }}</h3>
+                <h3>${{ total_weekly_spread|floatformat:0|intcomma }}</h3>
                 <p class="mb-0">Weekly Spread</p>
             </div>
         </div>
@@ -50,7 +51,7 @@
     <div class="col-md-3">
         <div class="card metric-card">
             <div class="card-body text-center">
-                <h3>${{ next_quarter_spread|floatformat:0 }}</h3>
+                <h3>${{ next_quarter_spread|floatformat:0|intcomma }}</h3>
                 <p class="mb-0">Next Quarter Guaranteed</p>
             </div>
         </div>
@@ -67,7 +68,7 @@
                     <div>
                         <h6 class="mb-0">
                             <i class="fas fa-exclamation-triangle text-warning"></i> 
-                            {{ expired_contracts.count|add:imminent_contracts.count|add:quarterly_contracts.count }} Contractor Alert{{ expired_contracts.count|add:imminent_contracts.count|add:quarterly_contracts.count|pluralize }}
+                            {{ expired_contracts.count|add:imminent_contracts.count|add:quarterly_contracts.count|intcomma }} Contractor Alert{{ expired_contracts.count|add:imminent_contracts.count|add:quarterly_contracts.count|pluralize }}
                         </h6>
                         <small class="text-muted">Contracts require your attention</small>
                     </div>
@@ -87,7 +88,7 @@
     <div class="col-12">
         <div class="alert alert-info">
             <strong><i class="fas fa-clock"></i> Review Queue:</strong>
-            {{ review_queue_count }} candidate{{ review_queue_count|pluralize }} pending review.
+            {{ review_queue_count|intcomma }} candidate{{ review_queue_count|pluralize }} pending review.
             <a href="{% url 'candidates:review_queue' %}" class="alert-link">Review now</a>
         </div>
     </div>
@@ -105,13 +106,13 @@
                 <div class="row">
                     <div class="col-6">
                         <div class="text-center">
-                            <h4 class="text-success">${{ total_weekly_spread|floatformat:0 }}</h4>
+                            <h4 class="text-success">${{ total_weekly_spread|floatformat:0|intcomma }}</h4>
                             <small class="text-muted">Current Weekly Spread</small>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="text-center">
-                            <h4 class="text-warning">${{ quarterly_falloffs|floatformat:0 }}</h4>
+                            <h4 class="text-warning">${{ quarterly_falloffs|floatformat:0|intcomma }}</h4>
                             <small class="text-muted">Quarterly Fall-offs</small>
                         </div>
                     </div>
@@ -132,8 +133,8 @@
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span>{{ client.client_name }}</span>
                         <div>
-                            <span class="badge bg-primary me-1">{{ client.count }} contractor{{ client.count|pluralize }}</span>
-                            <span class="badge bg-success">${{ client.total_spread|floatformat:0 }}</span>
+                            <span class="badge bg-primary me-1">{{ client.count|intcomma }} contractor{{ client.count|pluralize }}</span>
+                            <span class="badge bg-success">${{ client.total_spread|floatformat:0|intcomma }}</span>
                         </div>
                     </div>
                     {% endfor %}

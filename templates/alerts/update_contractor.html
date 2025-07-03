@@ -1,5 +1,6 @@
 
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block title %}Update Contractor - {{ candidate.contractor_name }}{% endblock %}
 
@@ -202,7 +203,7 @@
                 <p><strong>Contractor:</strong> {{ candidate.contractor_name }}</p>
                 <p><strong>Client:</strong> {{ candidate.client_name }}</p>
                 <p><strong>Current End Date:</strong> {{ candidate.contract_end_date }}</p>
-                <p><strong>Weekly Spread:</strong> ${{ candidate.weekly_spread_amount }}</p>
+                <p><strong>Weekly Spread:</strong> ${{ candidate.weekly_spread_amount|floatformat:0|intcomma }}</p>
                 
                 {% if candidate.contract_end_date < today %}
                     <div class="alert alert-danger">

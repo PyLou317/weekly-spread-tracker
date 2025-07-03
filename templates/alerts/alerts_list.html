@@ -1,5 +1,6 @@
-
 {% extends 'base.html' %}
+
+{% load humanize %}
 
 {% block title %}Contract Alerts - Staffing Tracker{% endblock %}
 
@@ -14,14 +15,14 @@
 {% if total_alerts > 0 %}
     <div class="alert alert-info mb-4">
         <i class="fas fa-info-circle"></i> 
-        You have <strong>{{ total_alerts }}</strong> contractor{{ total_alerts|pluralize }} that need{{ total_alerts|pluralize:"s," }} attention.
+        You have <strong>{{ total_alerts|intcomma }}</strong> contractor{{ total_alerts|pluralize }} that need{{ total_alerts|pluralize:"s," }} attention.
     </div>
 
     <!-- Expired Contracts -->
     {% if expired_contracts %}
     <div class="card mb-4">
         <div class="card-header bg-danger text-white">
-            <h5 class="mb-0"><i class="fas fa-times-circle"></i> Expired Contracts ({{ expired_contracts.count }})</h5>
+            <h5 class="mb-0"><i class="fas fa-times-circle"></i> Expired Contracts ({{ expired_contracts.count|intcomma }})</h5>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -43,7 +44,7 @@
                             <td>{{ contract.client_name }}</td>
                             <td>{{ contract.contract_end_date }}</td>
                             <td class="text-danger">{{ contract.contract_end_date|timesince }} ago</td>
-                            <td>${{ contract.weekly_spread_amount }}</td>
+                            <td>${{ contract.weekly_spread_amount|floatformat:0|intcomma }}</td>
                             <td>
                                 <a href="{% url 'alerts:update_contractor' contract.pk %}" class="btn btn-primary btn-sm">
                                     <i class="fas fa-edit"></i> Update
@@ -62,7 +63,7 @@
     {% if imminent_contracts %}
     <div class="card mb-4">
         <div class="card-header bg-warning text-dark">
-            <h5 class="mb-0"><i class="fas fa-clock"></i> Ending Soon - 2 Weeks or Less ({{ imminent_contracts.count }})</h5>
+            <h5 class="mb-0"><i class="fas fa-clock"></i> Ending Soon - 2 Weeks or Less ({{ imminent_contracts.count|intcomma }})</h5>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -84,7 +85,7 @@
                             <td>{{ contract.client_name }}</td>
                             <td>{{ contract.contract_end_date }}</td>
                             <td class="text-warning">{{ contract.contract_end_date|timeuntil }}</td>
-                            <td>${{ contract.weekly_spread_amount }}</td>
+                            <td>${{ contract.weekly_spread_amount|floatformat:0|intcomma }}</td>
                             <td>
                                 <a href="{% url 'alerts:update_contractor' contract.pk %}" class="btn btn-primary btn-sm">
                                     <i class="fas fa-edit"></i> Update
@@ -103,7 +104,7 @@
     {% if quarterly_contracts %}
     <div class="card mb-4">
         <div class="card-header" style="background-color: #fff3cd; color: #856404;">
-            <h5 class="mb-0"><i class="fas fa-calendar"></i> Ending This Quarter ({{ quarterly_contracts.count }})</h5>
+            <h5 class="mb-0"><i class="fas fa-calendar"></i> Ending This Quarter ({{ quarterly_contracts.count|intcomma }})</h5>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -125,7 +126,7 @@
                             <td>{{ contract.client_name }}</td>
                             <td>{{ contract.contract_end_date }}</td>
                             <td>{{ contract.contract_end_date|timeuntil }}</td>
-                            <td>${{ contract.weekly_spread_amount }}</td>
+                            <td>${{ contract.weekly_spread_amount|floatformat:0|intcomma }}</td>
                             <td>
                                 <a href="{% url 'alerts:update_contractor' contract.pk %}" class="btn btn-primary btn-sm">
                                     <i class="fas fa-edit"></i> Update
