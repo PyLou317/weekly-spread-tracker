@@ -1,0 +1,51 @@
+
+from django import forms
+from .models import UserProfile
+
+
+class OnboardingForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['full_name', 'role', 'phone_number']
+        widgets = {
+            'full_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your full name'
+            }),
+            'role': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'phone_number': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your phone number for SMS notifications'
+            }),
+        }
+        labels = {
+            'full_name': 'Full Name',
+            'role': 'What is your role?',
+            'phone_number': 'Phone Number (for SMS notifications)',
+        }
+
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['full_name', 'role', 'phone_number']
+        widgets = {
+            'full_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your full name'
+            }),
+            'role': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'phone_number': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your phone number for SMS notifications'
+            }),
+        }
+        labels = {
+            'full_name': 'Full Name',
+            'role': 'Role',
+            'phone_number': 'Phone Number (for SMS notifications)',
+        }
