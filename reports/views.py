@@ -116,11 +116,11 @@ def process_report(file_path, user):
         for actual_col in df.columns:
             # Flexible matching for common variations
             if expected_col == 'candidate_name':
-                if any(word in actual_col for word in ['candidate', 'name', 'employee', 'worker']):
+                if any(word in actual_col for word in ['contractor', 'candidate', 'employee', 'worker']):
                     column_mapping[expected_col] = actual_col
                     break
             elif expected_col == 'client_name':
-                if any(word in actual_col for word in ['client', 'company', 'customer']):
+                if any(word in actual_col for word in ['customer', 'client', 'company']):
                     column_mapping[expected_col] = actual_col
                     break
             elif expected_col == 'contract_start_date':
@@ -128,11 +128,11 @@ def process_report(file_path, user):
                     column_mapping[expected_col] = actual_col
                     break
             elif expected_col == 'contract_end_date':
-                if any(word in actual_col for word in ['end', 'finish', 'complete']) and 'date' in actual_col:
+                if any(word in actual_col for word in ['end', 'finish', 'complete', 'weekending']) and 'date' in actual_col:
                     column_mapping[expected_col] = actual_col
                     break
             elif expected_col == 'weekly_spread_amount':
-                if any(word in actual_col for word in ['spread', 'amount', 'weekly', 'profit']):
+                if any(word in actual_col for word in ['spread', 'expected_net_spread', 'net_spread']):
                     column_mapping[expected_col] = actual_col
                     break
             elif expected_col == 'recruiter_or_account_manager':
@@ -194,8 +194,18 @@ def process_report(file_path, user):
                 spread_col = column_mapping.get('weekly_spread_amount', 'weekly_spread_amount')
                 recruiter_col = column_mapping.get('recruiter_or_account_manager', 'recruiter_or_account_manager')
                 
-                start_date = pd.to_datetime(row.get(start_date_col), errors='coerce')
-                end_date = pd.to_datetime(row.get(end_date_col), errors='coerce')
+                # For weekly spread reports, we might not have contract start/end dates
+                if start_date_col in row and pd.notna(row.get(start_date_col)):
+                    start_date = pd.to_datetime(row.get(start_date_col), errors='coerce')
+                else:
+                    # Default to beginning of current year if no start date
+                    start_date = pd.to_datetime(f"{datetime.now().year}-01-01")
+                
+                if end_date_col in row and pd.notna(row.get(end_date_col)):
+                    end_date = pd.to_datetime(row.get(end_date_col), errors='coerce')
+                else:
+                    # Default to end of current year if no end date
+                    end_date = pd.to_datetime(f"{datetime.now().year}-12-31")
                 
                 # Check if dates are valid
                 if pd.isna(start_date) or pd.isna(end_date):
