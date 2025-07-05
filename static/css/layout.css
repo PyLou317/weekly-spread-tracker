@@ -1,0 +1,100 @@
+/* Layout Styles */
+body {
+    background: var(--light-color);
+    color: var(--dark-color);
+}
+
+/* Navbar Styles */
+.navbar {
+    background: var(--dark-surface);
+    color: var(--text-light);
+    border-bottom: 1px solid var(--dark-border);
+}
+
+.navbar-brand {
+    color: var(--primary-accent);
+}
+
+.navbar-toggler.sidebar-toggle {
+    color: var(--text-light);
+}
+
+.nav-link.dropdown-toggle {
+    color: var(--text-light);
+}
+
+.dropdown-menu {
+    background: var(--dark-surface);
+    color: var(--text-light);
+}
+
+.dropdown-item {
+    color: var(--primary-accent);
+}
+
+/* Sidebar Styles */
+.sidebar {
+    background: var(--dark-surface);
+    color: var(--text-light);
+    border-radius: var(--border-radius);
+    margin: 0.75rem 0.5rem 0.75rem 0.5rem;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+    /* border-right: 1px solid var(--dark-border); */
+}
+
+/* Main Content Styles */
+.main-content {
+    background: var(--light-color);
+    color: var(--dark-color);
+    margin: 1rem;
+    margin-left: var(--sidebar-width);
+    transition: margin-left 0.3s ease;
+}
+
+.main-content.expanded {
+    margin-left: var(--sidebar-collapsed-width);
+}
+
+.main-content > .container-fluid {
+  margin-left: 1rem;
+}
+
+/* Alert Styles */
+.alert {
+    background: var(--dark-surface);
+    color: var(--text-light);
+    border: 1px solid var(--dark-border);
+}
+
+@media (max-width: 991.98px) {
+  .main-content {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .navbar .navbar-nav.me-auto {
+    display: none !important;
+  }
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.9)' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.navbar-nav .nav-link {
+  color: var(--text-light) !important;
+  transition: background 0.2s, color 0.2s;
+  padding-left: 1rem;
+}
+
+.navbar-nav .nav-link.active, .navbar-nav .nav-link:active {
+  background: var(--primary-accent);
+  color: #fff !important;
+  border-radius: 0.75rem;
+}
+
+.navbar-nav.me-auto {
+  margin-top: 1rem;
+} 
