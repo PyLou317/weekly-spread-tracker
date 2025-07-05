@@ -1,0 +1,206 @@
+/* main.css - Global site styles, overrides Bootstrap for coherence */
+
+:root {
+  /* Core Palette: Dark Charcoals & Grays */
+  --dark-background: #1c1c1c; /* Deep charcoal for the main body background */
+  --dark-surface: #282828; /* Slightly lighter charcoal for cards, panels, navbars */
+  --dark-border: #444444; /* Medium dark gray for subtle borders and separators */
+  --text-light: #ebebeb; /* Very light gray for primary text, high contrast */
+  --text-muted: #b0b0b0; /* Soft gray for secondary text, hints, placeholders */
+  --text-dark: #121212; /* For text on very bright elements (e.g., bright badges) */
+
+  /* Vibrant Accent Colors (Purple is Back!) */
+  --primary-accent: #AC88F6; /* Vibrant, rich violet for primary actions & branding */
+  --primary-accent-hover: #9B77E5; /* Slightly darker violet for hover states */
+  --secondary-accent: #00bcd4; /* A calm but distinct teal for secondary elements/accents */
+
+  /* Functional Colors (Optimized for Dark Backgrounds) */
+  --success-vibrant: #4caf50; /* A clear, standard green for success */
+  --warning-vibrant: #ffc107; /* A bright amber for warnings */
+  --danger-vibrant: #ef5350; /* A distinct red for errors/danger */
+  --info-vibrant: #2196f3; /* A clean blue for informational messages */
+
+  /* Bootstrap Variable Mappings */
+  --primary-color: var(--primary-accent);
+  --primary-hover: var(--primary-accent-hover);
+  --secondary-color: var(--text-muted); /* Secondary elements can use muted text color */
+  --success-color: var(--success-vibrant);
+  --warning-color: var(--warning-vibrant);
+  --danger-color: var(--danger-vibrant);
+  --info-color: var(--info-vibrant);
+  --light-color: var(--dark-background); /* Body background */
+  --dark-color: var(--text-light); /* Body text color */
+
+  /* General UI Variables */
+  --border-radius: 0.75rem; /* Still a modern, slightly rounded look */
+  --btn-padding-y: 0.6em;
+  --btn-padding-x: 1.5em;
+  --btn-font-weight: 600;
+  --sidebar-width: 250px;
+  --sidebar-collapsed-width: 60px;
+
+  /* Card Specifics */
+  --card-gradient-start: #2f2f2f; /* Slightly lighter than --dark-surface for subtle gradient */
+  --card-gradient-end: #282828; /* Matches --dark-surface for a cohesive dark fade */
+}
+
+body {
+  background: var(--background-color);
+  color: var(--dark-color);
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-warning,
+.btn-danger,
+.btn-info,
+.btn-outline-secondary {
+  border-radius: var(--border-radius) !important;
+  font-weight: var(--btn-font-weight);
+  padding: var(--btn-padding-y) var(--btn-padding-x);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: none;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--primary-color) !important;
+  color: #fff !important;
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background: var(--primary-hover) !important;
+  color: #fff !important;
+}
+
+.btn-secondary,
+.btn-outline-secondary {
+  background: var(--secondary-color) !important;
+  color: #fff !important;
+}
+.btn-secondary:hover,
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus {
+  background: #52525b !important;
+  color: #fff !important;
+}
+
+.btn-success {
+  background: var(--success-color) !important;
+  color: #18181b !important;
+}
+.btn-success:hover,
+.btn-success:focus {
+  background: #22c55e !important;
+}
+
+.btn-warning {
+  background: var(--warning-color) !important;
+  color: #18181b !important;
+}
+.btn-warning:hover,
+.btn-warning:focus {
+  background: #eab308 !important;
+}
+
+.btn-danger {
+  background: var(--danger-color) !important;
+  color: #fff !important;
+}
+.btn-danger:hover,
+.btn-danger:focus {
+  background: #b91c1c !important;
+}
+
+.btn-info {
+  background: var(--info-color) !important;
+  color: #18181b !important;
+}
+.btn-info:hover,
+.btn-info:focus {
+  background: #0369a1 !important;
+}
+
+.btn:active,
+.btn:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 2px var(--primary-color) 33 !important;
+}
+
+.badge.rounded-pill {
+  border-radius: 999px !important;
+  font-weight: 500;
+  padding: 0.5em 1em;
+  background: var(--primary-color);
+  color: #fff;
+}
+
+.table-sort-active {
+  color: var(--primary-color) !important;
+}
+
+input.form-control,
+select.form-select {
+  border-radius: var(--border-radius) !important;
+  border: 1px solid var(--border-color);
+  background: var(--light-color);
+  color: var(--dark-color);
+  font-size: 1rem;
+}
+
+input.form-control:focus,
+select.form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color) 33;
+  background: var(--light-color);
+  color: var(--dark-color);
+}
+
+.navbar,
+.sidebar {
+  background: var(--light-color) !important;
+  /* border-radius: var(--border-radius); */
+  border-radius: 0 !important;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+  border: 1px solid var(--border-color);
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+a:hover,
+a:focus {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+hr {
+  border-color: var(--border-color);
+}
+
+/* Remove .card and .sidebar background overrides */
+
+/* Add more global overrides as needed for dark theme */
+
+/* --- LIGHT THEME --- */
+.light-theme {
+    --background-color: #f0f2f5;
+    --surface-color: #ffffff;
+    --border-color: #e0e0e0;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --text-on-accent: #ffffff;
+    --primary-accent: #AC88F6;
+    --primary-accent-hover: #9B77E5;
+    --secondary-accent: #00bcd4;
+    --success-color: #4caf50;
+    --warning-color: #ffc107;
+    --danger-color: #ef5350;
+    --info-color: #2196f3;
+    --card-gradient-start: #ffffff;
+    --card-gradient-end: #f8f8f8;
+}
