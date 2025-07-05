@@ -25,10 +25,20 @@ SECRET_KEY = 'django-insecure-4ju2n@$f9d0c=h)_g0lbb%k9&@rf(xa$d$g$&5ri$uf)*gev^4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.environ["REPLIT_DOMAINS"].split(',')
-CSRF_TRUSTED_ORIGINS = [
-    "https://" + domain for domain in os.environ["REPLIT_DOMAINS"].split(',')
-]
+# Handle ALLOWED_HOSTS and CSRF_TRUSTED_ORIGINS for both Replit and local development
+replit_domains = os.environ.get("REPLIT_DOMAINS")
+if replit_domains:
+    ALLOWED_HOSTS = replit_domains.split(',')
+    CSRF_TRUSTED_ORIGINS = [
+        "https://" + domain for domain in replit_domains.split(',')
+    ]
+else:
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]"]
+    CSRF_TRUSTED_ORIGINS = [
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://[::1]:8000"
+    ]
 
 # Application definition
 
