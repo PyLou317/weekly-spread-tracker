@@ -20,8 +20,8 @@
 
     <!-- Expired Contracts -->
     {% if expired_contracts %}
-    <div class="card mb-4">
-        <div class="card-header bg-danger text-white">
+    <div class="card mb-4 card-dark">
+        <div class="card-header card-header-danger">
             <h5 class="mb-0"><i class="fas fa-times-circle"></i> Expired Contracts ({{ expired_contracts.count|intcomma }})</h5>
         </div>
         <div class="card-body">
@@ -61,8 +61,8 @@
 
     <!-- Imminent Contracts -->
     {% if imminent_contracts %}
-    <div class="card mb-4">
-        <div class="card-header bg-warning text-dark">
+    <div class="card mb-4 card-dark">
+        <div class="card-header card-header-warning">
             <h5 class="mb-0"><i class="fas fa-clock"></i> Ending Soon - 2 Weeks or Less ({{ imminent_contracts.count|intcomma }})</h5>
         </div>
         <div class="card-body">
@@ -102,8 +102,8 @@
 
     <!-- Quarterly Contracts -->
     {% if quarterly_contracts %}
-    <div class="card mb-4">
-        <div class="card-header" style="background-color: #fff3cd; color: #856404;">
+    <div class="card mb-4 card-dark">
+        <div class="card-header card-header-info">
             <h5 class="mb-0"><i class="fas fa-calendar"></i> Ending This Quarter ({{ quarterly_contracts.count|intcomma }})</h5>
         </div>
         <div class="card-body">
