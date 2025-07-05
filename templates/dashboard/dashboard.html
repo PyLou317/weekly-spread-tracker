@@ -5,7 +5,7 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="mb-4">
+    <h1 class="mb-4 fw-bold">
         {% if user_profile and user_profile.full_name %}
             Welcome, {{ user_profile.full_name }}
         {% else %}
@@ -23,8 +23,8 @@
 </div>
 
 <!-- Key Metrics -->
-<div class="row mb-4">
-    <div class="col-md-3 mb-3 mb-md-0">
+<div class="row mb-3">
+    <div class="col-md-3 mb-2 mb-md-0">
         <div class="card metric-card">
             <div class="card-body text-center">
                 <h3>{{ total_contractors|floatformat:0 }}</h3>
@@ -32,7 +32,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3 mb-3 mb-md-0">
+    <div class="col-md-3 mb-2 mb-md-0">
         <div class="card metric-card">
             <div class="card-body text-center">
                 <h3>{{ total_clients|floatformat:0 }}</h3>
@@ -40,7 +40,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3 mb-3 mb-md-0">
+    <div class="col-md-3 mb-2 mb-md-0">
         <div class="card metric-card">
             <div class="card-body text-center">
                 <h3>${{ total_weekly_spread|floatformat:0|intcomma }}</h3>
@@ -48,7 +48,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-3 mb-2 mb-md-0">
         <div class="card metric-card">
             <div class="card-body text-center">
                 <h3>${{ next_quarter_spread|floatformat:0|intcomma }}</h3>
@@ -60,7 +60,7 @@
 
 <!-- Contract Alerts Summary -->
 {% if expired_contracts or imminent_contracts or quarterly_contracts %}
-<div class="row mb-4">
+<div class="row mb-3">
     <div class="col-12">
         <div class="card">
             <div class="card-body py-3">
@@ -84,7 +84,7 @@
 
 <!-- Review Queue Alert -->
 {% if review_queue_count > 0 %}
-<div class="row mb-4">
+<div class="row mb-2">
     <div class="col-12">
         <div class="alert alert-info">
             <strong><i class="fas fa-clock"></i> Review Queue:</strong>
@@ -95,14 +95,14 @@
 </div>
 {% endif %}
 
-<div class="row">
+<div class="row dashboard-cards-row">
     <!-- Financial Overview -->
     <div class="col-md-6">
         <div class="card">
             <div class="card-header">
                 <h5 class="mb-0">Financial Overview</h5>
             </div>
-            <div class="card-body">
+            <div class="card-body bg-dark-surface text-light">
                 <div class="row">
                     <div class="col-6">
                         <div class="text-center">
@@ -124,20 +124,20 @@
     <!-- Client Breakdown -->
     <div class="col-md-6">
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header top-clients-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Top Clients</h5>
-                <a href="{% url 'clients:list' %}" class="btn btn-sm btn-outline-primary">
+                <a href="{% url 'clients:list' %}" class="btn btn-sm btn-outline-primary text-white">
                     <i class="fas fa-eye"></i> View All
                 </a>
-            </div></div>
-            <div class="card-body">
+            </div>
+            <div class="card-body bg-dark-surface text-light">
                 {% if client_breakdown %}
                     {% for client in client_breakdown|slice:":5" %}
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span>{{ client.client_name }}</span>
-                        <div>
-                            <span class="badge bg-primary me-1">{{ client.count|intcomma }} contractor{{ client.count|pluralize }}</span>
-                            <span class="badge bg-success">${{ client.total_spread|floatformat:0|intcomma }}</span>
+                        <div class="top-client-badge-container">
+                            <span class="badge bg-primary top-client-badge">{{ client.count|intcomma }} contractor{{ client.count|pluralize }}</span>
+                            <span class="badge bg-success top-client-badge">${{ client.total_spread|floatformat:0|intcomma }}</span>
                         </div>
                     </div>
                     {% endfor %}
