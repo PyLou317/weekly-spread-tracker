@@ -39,6 +39,18 @@ def candidate_list(request):
             client_name__icontains=search
         )
 
+    # Sorting functionality
+    sort = request.GET.get('sort', 'created_at')
+    direction = request.GET.get('direction', 'desc')
+    allowed_sorts = [
+        'contractor_name', 'client_name', 'contract_start_date', 'contract_end_date',
+        'recruiter_or_account_manager', 'status', 'weekly_spread_amount', 'created_at'
+    ]
+    if sort not in allowed_sorts:
+        sort = 'created_at'
+    order = f"{'-' if direction == 'desc' else ''}{sort}"
+    candidates = candidates.order_by(order)
+
     paginator = Paginator(candidates, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -46,6 +58,8 @@ def candidate_list(request):
     return render(request, 'candidates/list.html', {
         'page_obj': page_obj,
         'search': search,
+        'sort': sort,
+        'direction': direction,
     })
 
 

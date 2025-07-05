@@ -1,4 +1,3 @@
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -33,7 +32,8 @@ class Candidate(models.Model):
     def contract_status(self):
         """Return contract status based on end date"""
         today = date.today()
-        days_until_end = (self.contract_end_date - today).days
+        delta: timedelta = self.contract_end_date - date.today()
+        days_until_end: int = delta.days
         
         if days_until_end < 0:
             return 'expired'
