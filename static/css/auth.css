@@ -1,26 +1,43 @@
 /* Authentication Styles */
 
+/* Auth Body Background */
+.auth-body {
+    background: var(--dark-background);
+    color: var(--text-light);
+    min-height: 100vh;
+}
+
 /* Auth Container */
 .auth-container {
-    min-height: 100vh;
+    min-height: 80vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-accent) 100%);
-    padding: 20px;
+    padding: 2rem 1rem;
+    background: transparent;
+    width: 100%;
 }
 
 .auth-card {
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    width: 100%;
+    background: var(--dark-surface);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    padding: 2.5rem;
+    width: 90vw;
     max-width: 400px;
+    border: 1px solid var(--border-color);
+    margin: 0 auto;
+}
+
+@media (min-width: 426px) {
+    .auth-card {
+        width: 400px;
+    }
 }
 
 .auth-header {
-    background: var(--primary-color);
+    /* background: var(--dark-background); */
+    border-radius: 20px;
     color: white;
     padding: 30px;
     text-align: center;
@@ -37,16 +54,21 @@
 }
 
 .auth-form .form-control {
+    background: #ffffff;
+    color: #333333;
+    border: 1px solid var(--border-color);
     border-radius: 10px;
-    border: 2px solid #e9ecef;
+    border: 2px solid var(--border-color);
     padding: 12px 16px;
     font-size: 1rem;
     transition: all 0.3s ease;
 }
 
 .auth-form .form-control:focus {
+    background: #ffffff;
+    color: #333333;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(138, 43, 226, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(172, 136, 246, 0.25);
 }
 
 .auth-btn {
@@ -68,7 +90,20 @@
 
 .auth-links {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+@media (min-width: 426px) {
+    .auth-links {
+        margin-top: 20px;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
 }
 
 .auth-links a {
@@ -85,7 +120,7 @@
 /* Logo and Brand */
 .auth-logo {
     font-size: 2.5rem;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
     color: white;
 }
 
@@ -106,18 +141,17 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 2rem;
 }
 
 .auth-logo i {
     font-size: 2.5rem;
-    color: var(--primary-color);
+    color: var(--text-light);
 }
 
 .auth-logo .site-name {
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--primary-color);
+    color: var(--text-light);
     margin-top: 0.5rem;
 }
 
@@ -149,38 +183,20 @@
 }
 
 /* Login-specific styles */
-.auth-container {
-    min-height: 80vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1rem;
-}
-
-.auth-card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    padding: 2.5rem;
-    width: 100%;
-    max-width: 400px;
-    border: 1px solid #e5e7eb;
-}
-
 .auth-header {
     text-align: center;
     margin-bottom: 2rem;
 }
 
 .auth-header h2 {
-    color: #111827;
+    color: var(--text-light);
     font-size: 1.75rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
 }
 
 .auth-header p {
-    color: #6b7280;
+    color: var(--text-muted);
     font-size: 0.95rem;
     margin: 0;
 }
@@ -193,34 +209,37 @@
     display: block;
     font-size: 0.875rem;
     font-weight: 500;
-    color: #374151;
+    color: var(--text-light);
     margin-bottom: 0.5rem;
 }
 
 .form-control {
     width: 100%;
     padding: 0.75rem 1rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     font-size: 0.95rem;
     transition: all 0.2s ease;
-    background-color: #f9fafb;
+    background-color: #ffffff;
+    color: #333333;
 }
 
 .form-control:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    background-color: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(172, 136, 246, 0.25);
+    background-color: #ffffff;
+    color: #333333;
 }
 
 .form-control.is-invalid {
-    border-color: #ef4444;
-    background-color: #fef2f2;
+    border-color: var(--danger-color);
+    background-color: #ffffff;
+    color: #333333;
 }
 
 .invalid-feedback {
-    color: #ef4444;
+    color: var(--danger-color);
     font-size: 0.875rem;
     margin-top: 0.25rem;
 }
@@ -234,20 +253,21 @@
 .form-check-input {
     width: 1rem;
     height: 1rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
+    background-color: #ffffff;
 }
 
 .form-check-label {
     font-size: 0.875rem;
-    color: #374151;
+    color: var(--text-light);
     margin: 0;
 }
 
 .btn-auth {
     width: 100%;
     padding: 0.875rem;
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    background: var(--primary-color);
     border: none;
     border-radius: 8px;
     color: white;
@@ -258,9 +278,9 @@
 }
 
 .btn-auth:hover {
-    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    background: var(--primary-accent-hover);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 8px rgba(172, 136, 246, 0.3);
 }
 
 .auth-links {
@@ -269,19 +289,19 @@
 }
 
 .auth-link {
-    color: #3b82f6;
+    color: var(--primary-color);
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s ease;
 }
 
 .auth-link:hover {
-    color: #1d4ed8;
+    color: var(--primary-accent-hover);
     text-decoration: none;
 }
 
 .auth-divider {
-    color: #d1d5db;
+    color: var(--border-color);
     margin: 0 0.75rem;
 }
 
@@ -290,10 +310,13 @@
     border-radius: 8px;
     font-size: 0.875rem;
     margin-bottom: 1rem;
+    background-color: var(--dark-surface);
+    border: 1px solid var(--border-color);
+    color: var(--text-light);
 }
 
 .alert-danger {
-    background-color: #fef2f2;
-    border: 1px solid #fecaca;
-    color: #dc2626;
+    background-color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+    color: white;
 } 

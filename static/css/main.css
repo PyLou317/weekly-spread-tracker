@@ -78,7 +78,7 @@ body {
 
 .btn-secondary,
 .btn-outline-secondary {
-  background: var(--secondary-color) !important;
+  background: var(--dark-surface) !important;
   color: #fff !important;
 }
 .btn-secondary:hover,
@@ -182,25 +182,49 @@ hr {
   border-color: var(--border-color);
 }
 
-/* Remove .card and .sidebar background overrides */
+/* Light text on table row hover for alerts list (more specific) */
+.card-dark .table-hover tbody tr:hover {
+  color: var(--text-light) !important;
+}
 
-/* Add more global overrides as needed for dark theme */
+/* Style the choose file button with 20px border-radius */
+input[type='file']::-webkit-file-upload-button {
+  border-radius: .75rem;
+}
+input[type='file']::file-selector-button {
+  border-radius: .75rem;
+}
 
-/* --- LIGHT THEME --- */
-.light-theme {
-    --background-color: #f0f2f5;
-    --surface-color: #ffffff;
-    --border-color: #e0e0e0;
-    --text-primary: #333333;
-    --text-secondary: #666666;
-    --text-on-accent: #ffffff;
-    --primary-accent: #AC88F6;
-    --primary-accent-hover: #9B77E5;
-    --secondary-accent: #00bcd4;
-    --success-color: #4caf50;
-    --warning-color: #ffc107;
-    --danger-color: #ef5350;
-    --info-color: #2196f3;
-    --card-gradient-start: #ffffff;
-    --card-gradient-end: #f8f8f8;
+.input-group-text {
+  background: var(--light-color) !important;
+  color: #fff !important;
+  border: none !important;
+  border-top-left-radius: var(--border-radius) !important;
+  border-bottom-left-radius: var(--border-radius) !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.input-group > .form-control {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+input[type='date']::-ms-input-placeholder {
+  color: #fff;
+}
+input[type='date']::file-selector-button {
+  filter: invert(1);
+}
+
+.dropdown-menu .dropdown-item {
+  color: #fff !important;
+}
+.dropdown-menu .dropdown-item:hover, .dropdown-menu .dropdown-item:focus {
+  color: #fff !important;
+  background: var(--primary-color) !important;
 }

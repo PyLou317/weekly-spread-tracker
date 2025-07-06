@@ -3,6 +3,11 @@
     background: #23232b !important;
     box-shadow: 0 2px 8px rgba(44,62,80,0.06);
     border-radius: 18px;
+    color: var(--text-light) !important;
+}
+
+.table-hover>tbody>tr:hover>* {
+    color: var(--text-light) !important;
 }
 
 .btn-circle {

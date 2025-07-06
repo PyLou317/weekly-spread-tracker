@@ -116,6 +116,10 @@
     background: var(--background-color);
 }
 
+.main-content .container-fluid .container-fluid, .main-content .container-fluid .row {
+    /* margin-top: .4rem; */
+}
+
 .main-content.expanded {
     margin-left: var(--sidebar-collapsed-width);
 }
@@ -183,6 +187,11 @@
     margin-right: 0.75rem;
 }
 
+/* Navbar Brand */
+.navbar-brand:hover {
+    text-decoration: none;
+}
+
 /* Card and Misc */
 .card-header {
     background-color: var(--dark-surface);
@@ -199,7 +208,7 @@
 }
 
 .metric-card {
-    background: var(--primary-color);
+    background: linear-gradient(135deg, var(--dark-surface) 0%, rgba(40, 40, 40, 0.7) 100%);
     color: #fff;
     border-radius: var(--border-radius);
     border: 1px solid var(--border-color);
@@ -279,4 +288,55 @@
     .mobile-nav-dropdown {
         display: none !important;
     }
+}
+
+.navbar {
+    background: var(--dark-surface) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+    border: none !important;
+}
+
+.row {
+    --bs-gutter-x: 0.8rem;
+}
+
+.sidebar .nav-item {
+    margin-bottom: 0.5rem;
+}
+
+.sidebar .nav-item .nav-link:hover {
+    text-decoration: none;
+}
+
+/* Navbar datetime styling */
+.navbar-text {
+    display: flex;
+    align-items: center;
+    color: var(--text-light) !important;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.navbar-text i {
+    margin-right: 0.5rem;
+    color: var(--text-light);
+}
+
+/* Mobile datetime styling */
+.mobile-datetime {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    background: var(--dark-surface);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.mobile-datetime i {
+    margin-right: 0.5rem;
+    color: var(--text-light);
 } 
