@@ -33,12 +33,12 @@ if replit_domains:
         "https://" + domain for domain in replit_domains.split(',')
     ]
 else:
-    ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]"]
-    CSRF_TRUSTED_ORIGINS = [
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]", "0.0.0.0"]
+CSRF_TRUSTED_ORIGINS = [
         "http://localhost:8000",
         "http://127.0.0.1:8000",
         "http://[::1]:8000"
-    ]
+]
 
 # Application definition
 
@@ -56,10 +56,11 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'widget_tweaks',
 
     # Local apps
     'accounts',
-    'candidates',
+    'contractors',
     'clients',
     'reports',
     'dashboard',
@@ -83,6 +84,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'  # Disable email verification for developmen
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -94,6 +96,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'accounts.middleware.OnboardingMiddleware',
+    'accounts.middleware.TimezoneMiddleware',
 ]
 
 # Only use clickjacking protection in deployments because the Development Web View uses
@@ -159,7 +162,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Toronto'
 
 USE_I18N = True
 
