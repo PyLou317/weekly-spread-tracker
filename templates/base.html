@@ -13,6 +13,7 @@
     <link href="{% static 'css/layout.css' %}" rel="stylesheet">
     <link href="{% static 'css/components.css' %}" rel="stylesheet">
     <link href="{% static 'css/auth.css' %}" rel="stylesheet">
+    <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
 </head>
 <body>
     <!-- Top Navigation Bar -->
@@ -33,7 +34,7 @@
             {% if user.is_authenticated %}
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 {% url 'dashboard:dashboard' as dashboard_url %}
-                {% url 'candidates:list' as candidates_url %}
+                {% url 'contractors:list' as contractors_url %}
                 {% url 'clients:list' as clients_url %}
                 {% url 'alerts:alerts_list' as alerts_url %}
                 {% url 'reports:upload' as reports_url %}
@@ -42,7 +43,7 @@
                         <a class="nav-link{% if request.path == dashboard_url %} active{% endif %}" href="{{ dashboard_url }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link{% if request.path == candidates_url %} active{% endif %}" href="{{ candidates_url }}"><i class="fas fa-user-tie"></i> Candidates</a>
+                        <a class="nav-link{% if request.path == contractors_url %} active{% endif %}" href="{{ contractors_url }}"><i class="fas fa-user-tie"></i> Contractors</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link{% if request.path == clients_url %} active{% endif %}" href="{{ clients_url }}"><i class="fas fa-building"></i> Clients</a>
@@ -55,6 +56,14 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item d-lg-block">
+                        <span class="navbar-text me-3">
+                            <i class="fas fa-clock"></i>
+                            <span id="current-datetime">
+                                {% now "M j, Y g:i A" %}
+                            </span>
+                        </span>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user"></i>
@@ -67,7 +76,7 @@
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">My Profile</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a></li>
+                            <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -76,50 +85,62 @@
         </div>
     </nav>
 
-    <!-- Sidebar -->
-    {% if user.is_authenticated %}
-    <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <span class="fw-bold">Navigation</span>
-            <button class="sidebar-toggle-btn" id="sidebarCollapseBtn" title="Collapse Sidebar">
-                <i class="fas fa-chevron-left" id="sidebarArrow"></i>
-            </button>
-        </div>
-        <div class="sidebar-nav">
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'dashboard:dashboard' %}">
-                        <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'candidates:list' %}">
-                        <i class="fas fa-user-tie"></i> <span>Candidates</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'clients:list' %}">
-                        <i class="fas fa-building"></i> <span>Clients</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'alerts:alerts_list' %}">
-                        <i class="fas fa-exclamation-triangle"></i> <span>Alerts</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'reports:upload' %}">
-                        <i class="fas fa-upload"></i> <span>Upload Report</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    {% endif %}
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <!-- Sidebar -->
+        {% if user.is_authenticated %}
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span class="fw-bold">Navigation</span>
+                <button class="sidebar-toggle-btn" id="sidebarCollapseBtn" title="Collapse Sidebar">
+                    <i class="fas fa-chevron-left" id="sidebarArrow"></i>
+                </button>
+            </div>
+            <div class="sidebar-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard:dashboard' %}">
+                            <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contractors:list' %}">
+                            <i class="fas fa-user-tie"></i> <span>Contractors</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'clients:list' %}">
+                            <i class="fas fa-building"></i> <span>Clients</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'alerts:alerts_list' %}">
+                            <i class="fas fa-exclamation-triangle"></i> <span>Alerts</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'reports:upload' %}">
+                            <i class="fas fa-upload"></i> <span>Upload Report</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        {% endif %}
 
-    <!-- Main Content -->
-    <div class="main-content" id="mainContent">
-        <div class="container-fluid mt-5 pt-3">
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+        <div class="container-fluid pt-3">
+            <!-- Mobile DateTime Display -->
+            <div class="d-lg-none mb-3">
+                <div class="mobile-datetime">
+                    <i class="fas fa-clock"></i>
+                    <span id="mobile-current-datetime">
+                        {% now "M j, Y g:i A" %}
+                    </span>
+                </div>
+            </div>
+            
             {% if messages %}
                 {% for message in messages %}
                     <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -133,6 +154,46 @@
             {% endblock %}
         </div>
     </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-4">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="footer-content">
+                        <h6 class="text-light mb-2">
+                            <i class="fas fa-chart-line"></i> Staffing Tracker
+                        </h6>
+                        <p class="text-muted mb-0 small">
+                            Streamline your staffing agency operations with our comprehensive tracking platform.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="footer-content text-md-end">
+                        <div class="footer-links mb-2">
+                            <a href="{% url 'dashboard:dashboard' %}" class="text-muted me-3 small">
+                                Dashboard
+                            </a>
+                            <a href="{% url 'contractors:list' %}" class="text-muted me-3 small">
+                                Contractors
+                            </a>
+                            <a href="{% url 'clients:list' %}" class="text-muted me-3 small">
+                                Clients
+                            </a>
+                            <a href="{% url 'alerts:alerts_list' %}" class="text-muted small">
+                                Alerts
+                            </a>
+                        </div>
+                        <p class="text-muted mb-0 small">
+                            &copy; {% now "Y" %} Staffing Tracker. All rights reserved.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -184,7 +245,91 @@
                     }
                 }
             });
+
+            // Action menu (3-dot) functionality with upward opening for last two rows and toggle
+            function closeAllMenus() {
+                document.querySelectorAll('.action-menu-dropdown').forEach(function(menu) {
+                    menu.classList.add('d-none');
+                    menu.classList.remove('open-up');
+                });
+            }
+
+            document.querySelectorAll('.action-menu-toggle').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const menu = btn.nextElementSibling;
+                    const isOpen = !menu.classList.contains('d-none');
+                    closeAllMenus();
+                    if (!isOpen) {
+                        menu.classList.toggle('d-none');
+                        // Find all visible table rows
+                        const row = btn.closest('tr');
+                        const allRows = Array.from(row.parentNode.children).filter(
+                            r => r.offsetParent !== null
+                        );
+                        const rowIndex = allRows.indexOf(row);
+                        // If this is one of the last two rows, open upward
+                        if (rowIndex >= allRows.length - 2) {
+                            menu.classList.add('open-up');
+                        }
+                    }
+                });
+            });
+
+            document.addEventListener('click', closeAllMenus);
+            window.addEventListener('scroll', closeAllMenus, true);
+            window.addEventListener('resize', closeAllMenus);
         });
+
+        // Detect user's timezone and send to server
+        function detectTimezone() {
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            
+            // Send timezone to server via AJAX
+            fetch('{% url "accounts:set_timezone" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                },
+                body: JSON.stringify({
+                    timezone: timezone
+                })
+            }).catch(error => console.log('Timezone detection failed:', error));
+        }
+        
+        // Run timezone detection on page load
+        document.addEventListener('DOMContentLoaded', detectTimezone);
+        
+        // Update datetime display in real-time
+        function updateDateTime() {
+            const datetimeElement = document.getElementById('current-datetime');
+            const mobileDatetimeElement = document.getElementById('mobile-current-datetime');
+            
+            const now = new Date();
+            const options = {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            };
+            const formattedDateTime = now.toLocaleDateString('en-US', options);
+            
+            if (datetimeElement) {
+                datetimeElement.textContent = formattedDateTime;
+            }
+            if (mobileDatetimeElement) {
+                mobileDatetimeElement.textContent = formattedDateTime;
+            }
+        }
+        
+        // Update time every minute
+        setInterval(updateDateTime, 60000);
+        
+        // Initial update
+        document.addEventListener('DOMContentLoaded', updateDateTime);
     </script>
     {% block extra_js %}
     {% endblock %}
