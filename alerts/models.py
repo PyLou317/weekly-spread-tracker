@@ -1,7 +1,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
-from candidates.models import Candidate
+from contractors.models import Candidate
 
 
 class Alert(models.Model):
