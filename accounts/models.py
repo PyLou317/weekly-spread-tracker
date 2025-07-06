@@ -1,4 +1,3 @@
-
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -14,6 +13,7 @@ class UserProfile(models.Model):
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, blank=True)
     phone_number = models.CharField(max_length=20, blank=True)
     onboarding_completed = models.BooleanField(default=False)
+    first_report_uploaded = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -21,7 +21,13 @@ class UserProfile(models.Model):
         return f"{self.user.username}'s Profile"
     
     def is_onboarding_complete(self):
-        return self.full_name and self.role and self.phone_number
+        return self.full_name and self.role
+    
+    def get_first_name(self):
+        """Get the first name from full_name"""
+        if not self.full_name:
+            return ""
+        return self.full_name.split()[0] if self.full_name.strip() else ""
     
     def formatted_phone_number(self):
         """Format phone number as (XXX) XXX-XXXX"""
