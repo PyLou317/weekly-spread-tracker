@@ -10,7 +10,7 @@
             <div class="card">
                 <div class="card-header text-center">
                     <h2>Welcome to Spread Tracker!</h2>
-                    <p class="text-muted">Let's set up your profile to get started</p>
+                    <p class="text-muted">Let's set up your profile, then upload your first spread report to get started</p>
                 </div>
                 <div class="card-body">
                     {% if messages %}
@@ -64,13 +64,17 @@
                                     {% endfor %}
                                 </div>
                             {% endif %}
-                            <div class="form-text">We'll use this to send you important notifications about contract statuses.</div>
-                        </div>
                         
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-check"></i> Complete Setup
+                                <i class="fas fa-check"></i> Complete Profile Setup
                             </button>
+                        </div>
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle"></i> 
+                                After completing your profile, you'll be directed to upload your first spread report.
+                            </small>
                         </div>
                     </form>
                 </div>

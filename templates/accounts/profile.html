@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 
 {% block title %}My Profile{% endblock %}
@@ -12,7 +11,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-8 mb-2 mb-md-0">
         <div class="card">
             <div class="card-header">
                 <h5 class="mb-0">Profile Information</h5>
@@ -46,15 +45,6 @@
                         {% else %}
                             Not set
                         {% endif %}
-                    </div>
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-sm-3">
-                        <strong>Phone Number:</strong>
-                    </div>
-                    <div class="col-sm-9">
-                        {{ profile.formatted_phone_number }}
                     </div>
                 </div>
                 
@@ -95,6 +85,9 @@
                     </a>
                     <a href="{% url 'dashboard:dashboard' %}" class="btn btn-outline-secondary">
                         <i class="fas fa-dashboard"></i> Dashboard
+                    </a>
+                    <a href="{% url 'account_reset_password' %}" class="btn btn-outline-warning">
+                        <i class="fas fa-key"></i> Reset Password
                     </a>
                 </div>
             </div>
