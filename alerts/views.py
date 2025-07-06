@@ -4,28 +4,28 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from datetime import date, timedelta
-from candidates.models import Candidate
-from candidates.forms import CandidateForm
+from contractors.models import Candidate
+from contractors.forms import CandidateForm
 from .models import Alert
 
 
 @login_required
 def alerts_list(request):
     """Display all active alerts for the user's contractors"""
-    # Get all active candidates for the user
-    user_candidates = Candidate.objects.filter(user=request.user, status='active')
+    # Get all active contractors for the user
+    user_contractors = Candidate.objects.filter(user=request.user, status='active')
     
     today = date.today()
     quarter_end = _get_quarter_end(today)
     two_weeks_from_now = today + timedelta(days=14)
     
     # Categorize contracts with alerts
-    expired_contracts = user_candidates.filter(contract_end_date__lt=today)
-    imminent_contracts = user_candidates.filter(
+    expired_contracts = user_contractors.filter(contract_end_date__lt=today)
+    imminent_contracts = user_contractors.filter(
         contract_end_date__gte=today,
         contract_end_date__lte=two_weeks_from_now
     )
-    quarterly_contracts = user_candidates.filter(
+    quarterly_contracts = user_contractors.filter(
         contract_end_date__gt=two_weeks_from_now,
         contract_end_date__lte=quarter_end
     )
