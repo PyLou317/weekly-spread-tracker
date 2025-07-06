@@ -8,9 +8,22 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">
-                <h4 class="mb-0">Upload Weekly Spread Report</h4>
+                <h4 class="mb-0">
+                    {% if messages %}
+                        <i class="fas fa-upload"></i> Upload Your First Spread Report
+                    {% else %}
+                        <i class="fas fa-upload"></i> Upload Weekly Spread Report
+                    {% endif %}
+                </h4>
             </div>
             <div class="card-body">
+                {% if messages %}
+                    <div class="alert alert-success">
+                        <h6><i class="fas fa-check-circle"></i> Welcome to Spread Tracker!</h6>
+                        <p class="mb-2">Your profile is set up successfully. Now let's get your first spread report uploaded to start tracking your contractors and clients.</p>
+                    </div>
+                {% endif %}
+                
                 <div class="alert alert-info">
                     <h6><i class="fas fa-info-circle"></i> File Format Requirements:</h6>
                     <ul class="mb-0">
@@ -18,8 +31,8 @@
                         <li>Required columns: contractor/candidate name, client/customer name, spread amount</li>
                         <li>Optional columns: start date, end date, recruiter/account manager</li>
                         <li>Missing dates will default to today's date (update in app)</li>
-                        <li>New candidates will be added automatically</li>
-                        <li>Candidates not in the report will be moved to review queue</li>
+                        <li>New contractors will be added automatically</li>
+<li>Contractors not in the report will be moved to review queue</li>
                     </ul>
                 </div>
                 
