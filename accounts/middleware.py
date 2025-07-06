@@ -1,7 +1,8 @@
-
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib.auth.models import AnonymousUser
+from django.utils import timezone
+import pytz
 from .models import UserProfile
 
 
@@ -40,3 +41,25 @@ class OnboardingMiddleware:
                 return redirect('accounts:onboarding')
         
         return self.get_response(request)
+
+
+class TimezoneMiddleware:
+    """Middleware to set user's timezone based on session"""
+    
+    def __init__(self, get_response):
+        self.get_response = get_response
+    
+    def __call__(self, request):
+        # Get timezone from session
+        user_timezone = request.session.get('user_timezone')
+        
+        if user_timezone:
+            try:
+                # Activate the user's timezone
+                timezone.activate(pytz.timezone(user_timezone))
+            except pytz.exceptions.UnknownTimeZoneError:
+                # Fall back to default timezone if invalid
+                pass
+        
+        response = self.get_response(request)
+        return response
