@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1><i class="fas fa-exclamation-triangle text-warning"></i> Contract Alerts</h1>
+    <h1><i class="fas fa-exclamation-triangle text-warning"></i> Contractor Alerts</h1>
     <a href="{% url 'dashboard:dashboard' %}" class="btn btn-secondary">
         <i class="fas fa-arrow-left"></i> Back to Dashboard
     </a>
@@ -62,8 +62,8 @@
     <!-- Imminent Contracts -->
     {% if imminent_contracts %}
     <div class="card mb-4 card-dark">
-        <div class="card-header card-header-warning">
-            <h5 class="mb-0"><i class="fas fa-clock"></i> Ending Soon - 2 Weeks or Less ({{ imminent_contracts.count|intcomma }})</h5>
+        <div class="card-header">
+            <h5 class="mb-0"><span class="text-warning"><i class="fas fa-clock"></i></span> Ending Soon - 2 Weeks or Less ({{ imminent_contracts.count|intcomma }})</h5>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -103,7 +103,7 @@
     <!-- Quarterly Contracts -->
     {% if quarterly_contracts %}
     <div class="card mb-4 card-dark">
-        <div class="card-header card-header-info">
+        <div class="card-header">
             <h5 class="mb-0"><i class="fas fa-calendar"></i> Ending This Quarter ({{ quarterly_contracts.count|intcomma }})</h5>
         </div>
         <div class="card-body">
@@ -146,7 +146,7 @@
         <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
         <h5>No Contract Alerts</h5>
         <p class="text-muted">All contractor contracts are up to date!</p>
-        <a href="{% url 'candidates:list' %}" class="btn btn-primary">
+        <a href="{% url 'contractors:list' %}" class="btn btn-primary">
             <i class="fas fa-users"></i> View All Contractors
         </a>
     </div>
