@@ -8,8 +8,9 @@ from .forms import ReportUploadForm
 from datetime import datetime
 import os
 from typing import Type
-from candidates.models import Candidate
+from contractors.models import Candidate
 from clients.models import Client  # Import the Client model
+from accounts.models import UserProfile  # Import UserProfile model
 
 
 @login_required
@@ -30,7 +31,18 @@ def upload_report(request):
                 # Clean up the temporary file
                 default_storage.delete(file_name)
 
-                messages.success(request, f"Report processed successfully! {result['message']}")
+                # Mark first report as uploaded if this is the user's first report
+                try:
+                    user_profile = UserProfile.objects.get(user=request.user)
+                    if not user_profile.first_report_uploaded:
+                        user_profile.first_report_uploaded = True
+                        user_profile.save()
+                        messages.success(request, f"Welcome to Spread Tracker! Your first report has been uploaded successfully. {result['message']}")
+                    else:
+                        messages.success(request, f"Report processed successfully! {result['message']}")
+                except UserProfile.DoesNotExist:
+                    messages.success(request, f"Report processed successfully! {result['message']}")
+
                 return redirect('dashboard:dashboard')
 
             except Exception as e:
@@ -139,19 +151,19 @@ def process_report(file_path, user):
     if missing_columns:
         raise Exception(f"Could not find required columns: {missing_columns}. Available columns: {list(df.columns)}. Please ensure your file has contractor/candidate name, client/customer name, and spread amount columns.")
 
-    new_candidates = 0
-    updated_candidates = 0
+    new_contractors = 0
+    updated_contractors = 0
     moved_to_review = 0
 
-    # Get existing active candidates for this user
-    existing_candidates = set(
+    # Get existing active contractors for this user
+    existing_contractors = set(
         Candidate.objects.filter(user=user, status='active').values_list(
             'contractor_name', 'client_name'
         )
     )
 
-    # Track candidates found in the report
-    report_candidates = set()
+    # Track contractors found in the report
+    report_contractors = set()
 
     # Process each row in the report
     print(f"Processing {len(df)} rows from report")
@@ -175,12 +187,13 @@ def process_report(file_path, user):
                 print(f"Skipping row {index + 1} due to missing name data")
                 continue
 
-            report_candidates.add((contractor_name, client_name))
+            report_contractors.add((contractor_name, client_name))
 
             # Create client if it doesn't exist
             client_obj, created = Client.objects.get_or_create(
                 user=user,
-                name=client_name
+                name=client_name,
+                defaults={'name': client_name}
             )
             if created:
                 print(f"Created new client: {client_name}")
@@ -236,7 +249,7 @@ def process_report(file_path, user):
                 for field, value in candidate_data.items():
                     setattr(existing_candidate, field, value)
                 existing_candidate.save()
-                updated_candidates += 1
+                updated_contractors += 1
                 print(f"Updated existing candidate: {contractor_name}")
             else:
                 # Create new candidate
@@ -245,15 +258,16 @@ def process_report(file_path, user):
                     status='active',
                     **candidate_data
                 )
-                new_candidates += 1
+                new_contractors += 1
                 print(f"Created new candidate: {contractor_name} (ID: {new_candidate.pk})")
 
         except Exception as e:
+            print(f"Error creating or updating candidate for row {index + 1}: {e}")
             continue  # Skip problematic rows
 
-    # Move candidates not in the report to review queue
-    candidates_not_in_report = existing_candidates - report_candidates
-    for contractor_name, client_name in candidates_not_in_report:
+    # Move contractors not in the report to review queue
+    contractors_not_in_report = existing_contractors - report_contractors
+    for contractor_name, client_name in contractors_not_in_report:
         Candidate.objects.filter(
             user=user,
             contractor_name=contractor_name,
@@ -263,5 +277,5 @@ def process_report(file_path, user):
         moved_to_review += 1
 
     return {
-        'message': f"Added {new_candidates} new candidates, updated {updated_candidates} existing candidates, moved {moved_to_review} to review queue."
+        'message': f"Added {new_contractors} new contractors, updated {updated_contractors} existing contractors, moved {moved_to_review} to review queue."
     }
