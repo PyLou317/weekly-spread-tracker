@@ -90,3 +90,50 @@
 .badge-active {
     color: white !important;
 } 
+
+/* Hide all columns except Name, Spread, Actions on mobile */
+.col-contractor, .col-client, .col-start, .col-end, .col-recruiter, .col-status {
+    display: none;
+}
+
+.mobile-toggle-label, .mobile-col {
+    display: none;
+}
+
+.desktop-toggle-label {
+    display: block;
+}
+
+.table-row-hover .action-menu-toggle {
+    opacity: 0 !important;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+.table-row-hover:hover .action-menu-toggle {
+    opacity: 1 !important;
+    pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+    .mobile-toggle-label {
+        display: block;
+    }
+
+    .desktop-toggle-label, .desktop-col {
+        display: none;
+    }
+
+    .mobile-col {
+        display: table-cell !important;
+    }
+}
+
+/* On tablet and up, show all columns except Name */
+@media (min-width: 768px) {
+    .col-contractor, .col-client, .col-start, .col-end, .col-recruiter, .col-status {
+        display: table-cell;
+    }
+    .col-name {
+        display: none;
+    }
+}

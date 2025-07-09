@@ -46,11 +46,6 @@
     margin-bottom: 0;
 }
 
-/* Dashboard cards row spacing */
-.dashboard-cards-row {
-    margin-top: 1.5rem;
-}
-
 /* Top clients styling */
 .top-clients-header {
     border-bottom: 1px solid #404040;
