@@ -1,0 +1,139 @@
+/* Table Styles */
+.table-row-hover:hover {
+    background: #23232b !important;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.06);
+    border-radius: 18px;
+    color: var(--text-light) !important;
+}
+
+.table-hover>tbody>tr:hover>* {
+    color: var(--text-light) !important;
+}
+
+.btn-circle {
+    border-radius: 50% !important;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    box-shadow: none;
+    border: none;
+    transition: background 0.2s;
+}
+
+.btn-circle:hover {
+    background: #2a2a32 !important;
+}
+
+.badge.rounded-pill {
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.5em 1em;
+    letter-spacing: 0.02em;
+}
+
+.pagination-rounded .page-link {
+    border-radius: 50% !important;
+    margin: 0 0.15em;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination-rounded .page-item.active .page-link {
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+}
+
+.table-sort-active {
+    color: var(--primary-color) !important;
+}
+
+/* Table container styles */
+.table-container {
+    background: var(--dark-surface);
+    color: var(--text-light);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+/* Table header styles */
+.table thead th {
+    color: var(--text-light);
+}
+
+.table thead th a {
+    color: var(--text-light);
+    text-decoration: none;
+}
+
+.table thead th a:hover {
+    color: var(--primary-accent);
+}
+
+/* Table body styles */
+.table tbody td {
+    color: var(--text-light);
+}
+
+.table tbody td.text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Active badge with white text */
+.badge-active {
+    color: white !important;
+} 
+
+/* Hide all columns except Name, Spread, Actions on mobile */
+.col-contractor, .col-client, .col-start, .col-end, .col-recruiter, .col-status {
+    display: none;
+}
+
+.mobile-toggle-label, .mobile-col {
+    display: none;
+}
+
+.desktop-toggle-label {
+    display: block;
+}
+
+.table-row-hover .action-menu-toggle {
+    opacity: 0 !important;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+.table-row-hover:hover .action-menu-toggle {
+    opacity: 1 !important;
+    pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+    .mobile-toggle-label {
+        display: block;
+    }
+
+    .desktop-toggle-label, .desktop-col {
+        display: none;
+    }
+
+    .mobile-col {
+        display: table-cell !important;
+    }
+}
+
+/* On tablet and up, show all columns except Name */
+@media (min-width: 768px) {
+    .col-contractor, .col-client, .col-start, .col-end, .col-recruiter, .col-status {
+        display: table-cell;
+    }
+    .col-name {
+        display: none;
+    }
+}

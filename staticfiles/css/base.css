@@ -1,0 +1,157 @@
+/* base.css - Component-specific styles for dark theme */
+
+/* Expand Button in Navbar */
+.navbar-expand-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+    display: none;
+}
+
+.navbar-expand-btn:hover {
+    background-color: rgba(167, 139, 250, 0.08);
+}
+
+.navbar-expand-btn.show {
+    display: block;
+}
+
+/* Mobile Navigation Dropdown */
+.mobile-nav-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--light-color);
+    border-top: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px rgba(44, 62, 80, 0.1);
+    z-index: 1001;
+    display: none;
+    max-height: 100vh;
+    overflow-y: auto;
+}
+
+.mobile-nav-dropdown.show {
+    display: block;
+}
+
+.mobile-nav-dropdown .nav-link {
+    color: var(--dark-color);
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.mobile-nav-dropdown .nav-link:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.mobile-nav-dropdown .nav-link.active {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-radius: 8px;
+    margin: 0.25rem 0.5rem;
+}
+
+.mobile-nav-dropdown .nav-link i {
+    width: 20px;
+    margin-right: 0.75rem;
+}
+
+/* Navbar Brand */
+.navbar-brand:hover {
+    text-decoration: none;
+}
+
+/* Card and Misc */
+.card-header {
+    background-color: var(--dark-surface);
+    border-radius: 1rem !important;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(44,62,80,0.10);
+    background: var(--dark-surface);
+    color: var(--dark-color);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+}
+
+.metric-card {
+    background: linear-gradient(135deg, var(--dark-surface) 0%, rgba(40, 40, 40, 0.7) 100%);
+    color: #fff;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+}
+
+.warning-yellow {
+    background-color: var(--warning-color);
+    border-color: var(--border-color);
+    color: #18181b;
+}
+
+.warning-red {
+    background-color: var(--danger-color);
+    border-color: var(--border-color);
+    color: #fff;
+}
+
+.contract-status-expired {
+    background-color: var(--danger-color);
+    color: #fff;
+}
+
+.contract-status-imminent {
+    background-color: var(--warning-color);
+    color: #18181b;
+}
+
+.contract-status-quarterly {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.card-header.top-clients-header, .card-header.top-clients {
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+/* Navbar datetime styling */
+.navbar-text {
+    display: flex;
+    align-items: center;
+    color: var(--text-light) !important;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.navbar-text i {
+    margin-right: 0.5rem;
+    color: var(--text-light);
+}
+
+/* Mobile datetime styling */
+.mobile-datetime {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    background: var(--dark-surface);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.mobile-datetime i {
+    margin-right: 0.5rem;
+    color: var(--text-light);
+} 
