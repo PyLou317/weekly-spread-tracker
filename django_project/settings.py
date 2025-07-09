@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,20 +21,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4ju2n@$f9d0c=h)_g0lbb%k9&@rf(xa$d$g$&5ri$uf)*gev^4'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-4ju2n@$f9d0c=h)_g0lbb%k9&@rf(xa$d$g$&5ri$uf)*gev^4')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() == 'true'
 
-# Handle ALLOWED_HOSTS and CSRF_TRUSTED_ORIGINS for both Replit and local development
-replit_domains = os.environ.get("REPLIT_DOMAINS")
-if replit_domains:
-    ALLOWED_HOSTS = replit_domains.split(',')
-    CSRF_TRUSTED_ORIGINS = [
-        "https://" + domain for domain in replit_domains.split(',')
-    ]
-else:
-    ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]", "0.0.0.0"]
+
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',')
+if DEBUG:
+    ALLOWED_HOSTS.extend(['localhost', '127.0.0.1', '[::1]'])
+
 CSRF_TRUSTED_ORIGINS = [
         "http://localhost:8000",
         "http://127.0.0.1:8000",
@@ -129,10 +126,11 @@ WSGI_APPLICATION = 'django_project.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite3'), # Fallback for local development
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 # Password validation
