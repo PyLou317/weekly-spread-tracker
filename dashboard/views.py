@@ -48,6 +48,7 @@ def dashboard(request):
     
     # Quarterly falloff chart data
     quarterly_falloff_data = _get_quarterly_falloff_data(user_contractors)
+    guaranteed_spread_data = _get_guaranteed_spread_data(user_contractors)
     
     # Warning notifications
     expired_contracts = user_contractors.filter(contract_end_date__lt=today)
@@ -69,6 +70,7 @@ def dashboard(request):
         'quarterly_falloffs': quarterly_falloffs,
         'next_quarter_spread': next_quarter_spread,
         'quarterly_falloff_data': quarterly_falloff_data,
+        'guaranteed_spread_data': guaranteed_spread_data,
         'expired_contracts': expired_contracts,
         'imminent_contracts': imminent_contracts,
         'quarterly_contracts': quarterly_contracts,
@@ -135,3 +137,20 @@ def _get_quarter_start(date_obj, quarters_ahead=0):
         return date(target_year, 7, 1)
     else:
         return date(target_year, 10, 1)
+
+
+def _get_guaranteed_spread_data(contractors):
+    """Get guaranteed spread for the next 4 quarters (contracts active after each quarter's end)"""
+    today = date.today()
+    guaranteed_data = []
+    for i in range(4):
+        quarter_start = _get_quarter_start(today, i)
+        quarter_end = _get_quarter_end(quarter_start)
+        # Contracts still active after this quarter
+        guaranteed_contracts = contractors.filter(contract_end_date__gt=quarter_end)
+        total_spread = guaranteed_contracts.aggregate(total=Sum('weekly_spread_amount'))['total'] or Decimal('0')
+        guaranteed_data.append({
+            'quarter': f"Q{(quarter_start.month - 1) // 3 + 1} {quarter_start.year}",
+            'spread': float(total_spread)
+        })
+    return guaranteed_data

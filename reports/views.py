@@ -143,6 +143,9 @@ def process_report(file_path, user):
             column_mapping['contract_end_date'] = actual_col
         elif any(word in actual_col for word in ['recruiter', 'account', 'manager', 'am']):
             column_mapping['recruiter_or_account_manager'] = actual_col
+        # Add contractor_id to column mapping if present
+        if 'contractor_id' in actual_col or 'candidate_id' in actual_col or (('id' in actual_col) and ('contractor' in actual_col or 'candidate' in actual_col)):
+            column_mapping['contractor_id'] = actual_col
 
     print(f"Column mapping: {column_mapping}")
 
@@ -232,6 +235,11 @@ def process_report(file_path, user):
                     recruiter_col = column_mapping['recruiter_or_account_manager']
                     recruiter = str(row.get(recruiter_col, '')).strip()
 
+                contractor_id = ''
+                if 'contractor_id' in column_mapping:
+                    contractor_id_col = column_mapping['contractor_id']
+                    contractor_id = str(row.get(contractor_id_col, '')).strip()
+
                 candidate_data = {
                     'contractor_name': contractor_name,
                     'client_name': client_name,
@@ -239,6 +247,7 @@ def process_report(file_path, user):
                     'contract_end_date': end_date,
                     'weekly_spread_amount': float(weekly_spread),
                     'recruiter_or_account_manager': recruiter,
+                    'contractor_id': contractor_id,
                 }
             except Exception as e:
                 print(f"Error parsing row data for {contractor_name} - {client_name}: {str(e)}")
