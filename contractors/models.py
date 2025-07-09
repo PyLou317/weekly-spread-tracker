@@ -21,9 +21,12 @@ class Candidate(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    contractor_id = models.CharField(max_length=50, blank=True, null=True, unique=False)
     
     class Meta:
         ordering = ['-created_at']
+        verbose_name = "Contractor"
+        verbose_name_plural = "Contractors"
     
     def __str__(self):
         return f"{self.contractor_name} at {self.client_name}"
@@ -32,14 +35,15 @@ class Candidate(models.Model):
     def contract_status(self):
         """Return contract status based on end date"""
         today = date.today()
-        delta: timedelta = self.contract_end_date - date.today()
+        end_date = date.fromisoformat(str(self.contract_end_date))
+        delta: timedelta = end_date - today
         days_until_end: int = delta.days
         
         if days_until_end < 0:
             return 'expired'
         elif days_until_end <= 14:
             return 'imminent'
-        elif self.contract_end_date <= self._get_quarter_end():
+        elif end_date <= self._get_quarter_end():
             return 'quarterly'
         else:
             return 'normal'

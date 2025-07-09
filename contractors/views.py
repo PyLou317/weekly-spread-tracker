@@ -4,11 +4,13 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from .models import Candidate
 from .forms import CandidateForm
+from accounts.models import UserProfile
 
 
 @login_required
 def list_view(request):
     candidates = Candidate.objects.filter(user=request.user, status='active')
+    user = UserProfile.objects.get(user=request.user)
 
     # Handle batch deletion
     if request.method == 'POST':
@@ -56,6 +58,7 @@ def list_view(request):
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'contractors/list.html', {
+        'user': user,
         'page_obj': page_obj,
         'search': search,
         'sort': sort,
