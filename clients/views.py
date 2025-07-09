@@ -1,16 +1,26 @@
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import IntegrityError
 from .models import Client
 from .forms import ClientForm
+from contractors.models import Candidate
 
 
 @login_required
 def client_list(request):
     clients = Client.objects.filter(user=request.user)
-    return render(request, 'clients/list.html', {'clients': clients})
+    # Annotate each client with contractor_count
+    client_list = []
+    for client in clients:
+        contractor_count = Candidate.objects.filter(user=request.user, client_name=client.name).count()
+        client_list.append({
+            'id': client.id,
+            'name': client.name,
+            'created_at': client.created_at,
+            'contractor_count': contractor_count,
+        })
+    return render(request, 'clients/list.html', {'clients': client_list})
 
 
 @login_required
