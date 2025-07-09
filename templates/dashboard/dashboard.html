@@ -108,30 +108,55 @@
 </div>
 {% endif %}
 
-<!-- Quarterly Falloff Chart -->
-{% if quarterly_falloff_data %}
-<div class="row mb-3">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="fas fa-chart-bar text-light"></i> 
-                    Quarterly Spread Falloffs
-                </h5>
-                <small class="text-muted">Weekly spread amount falling off each quarter</small>
-            </div>
-            <div class="card-body">
-                <canvas id="quarterlyFalloffChart" width="400" height="200"></canvas>
+<div class="row">
+    <!-- Guaranteed Spread Chart -->
+    <div class="col-lg-6 col-md-12">
+        {% if guaranteed_spread_data %}
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-bar text-light"></i> 
+                            Guaranteed Spread by Quarter
+                        </h5>
+                        <small class="text-muted">Weekly spread amount guaranteed for each quarter</small>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="guaranteedSpreadChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
+        {% endif %}
+    </div>
+    <!-- Quarterly Falloff Chart -->
+    <div class="col-lg-6 col-md-12">
+        {% if quarterly_falloff_data %}
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-bar text-light"></i> 
+                            Quarterly Spread Falloffs
+                        </h5>
+                        <small class="text-muted">Weekly spread amount falling off each quarter</small>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="quarterlyFalloffChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
-{% endif %}
 
 <div class="row dashboard-cards-row">
     <!-- Financial Overview -->
-    <div class="col-md-6 mb-2 mb-md-0">
-        <div class="card">
+    <div class="col-md-6 mb-2 mb-md-0 h-100">
+        <div class="card h-100">
             <div class="card-header">
                 <h5 class="mb-0">Financial Overview</h5>
             </div>
@@ -155,8 +180,8 @@
     </div>
 
     <!-- Client Breakdown -->
-    <div class="col-md-6">
-        <div class="card">
+    <div class="col-md-6 h-100">
+        <div class="card h-100">
             <div class="card-header top-clients-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Top Clients</h5>
                 <a href="{% url 'clients:list' %}" class="btn btn-sm btn-outline-primary text-white">
@@ -183,12 +208,12 @@
 </div>
 
 <!-- Chart.js Script -->
-{% if quarterly_falloff_data %}
+{% if quarterly_falloff_data or guaranteed_spread_data %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    {% if quarterly_falloff_data %}
     const ctx = document.getElementById('quarterlyFalloffChart').getContext('2d');
-    
     const chartData = {
         labels: [
             {% for data in quarterly_falloff_data %}
@@ -209,7 +234,6 @@ document.addEventListener('DOMContentLoaded', function() {
             borderSkipped: false,
         }]
     };
-    
     const config = {
         type: 'bar',
         data: chartData,
@@ -217,9 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: {
-                    display: false
-                },
+                legend: { display: false },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
@@ -240,8 +262,60 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     };
-    
     new Chart(ctx, config);
+    {% endif %}
+    {% if guaranteed_spread_data %}
+    const ctxGuaranteed = document.getElementById('guaranteedSpreadChart').getContext('2d');
+    const guaranteedData = {
+        labels: [
+            {% for data in guaranteed_spread_data %}
+                '{{ data.quarter }}'{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        datasets: [{
+            label: 'Guaranteed Weekly Spread',
+            data: [
+                {% for data in guaranteed_spread_data %}
+                    {{ data.spread }}{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ],
+            backgroundColor: 'rgba(255, 255, 255, 0.7)',
+            borderColor: 'rgba(255, 255, 255, 1)',
+            borderWidth: 2,
+            borderRadius: 4,
+            borderSkipped: false,
+        }]
+    };
+    const guaranteedConfig = {
+        type: 'bar',
+        data: guaranteedData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return '$' + context.parsed.y.toLocaleString();
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    };
+    new Chart(ctxGuaranteed, guaranteedConfig);
+    {% endif %}
 });
 </script>
 {% endif %}

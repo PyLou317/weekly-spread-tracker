@@ -24,7 +24,8 @@
                             <tr>
                                 <th>Client Name</th>
                                 <th>Created</th>
-                        <th></th>
+                                <th class="text-center">Contractors</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -32,11 +33,21 @@
                     <tr class="table-row-hover">
                         <td class="fw-semibold">{{ client.name }}</td>
                         <td class="text-muted small">{{ client.created_at|date:"M d, Y" }}</td>
-                                <td>
-                            <a href="{% url 'clients:edit' client.pk %}" class="btn btn-light btn-circle me-1" title="Edit"><i class="fas fa-edit"></i></a>
-                            <a href="{% url 'clients:delete' client.pk %}" class="btn btn-light btn-circle" title="Delete"><i class="fas fa-trash"></i></a>
-                                </td>
-                            </tr>
+                        <td class="text-center">{{ client.contractor_count }}</td>
+                        <td class="text-end position-relative">
+                            <button class="btn btn-light btn-circle action-menu-toggle" type="button" title="Actions">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                            <div class="action-menu-dropdown d-none action-menu-mobile-stack">
+                                <a href="{% url 'clients:edit' client.id %}" class="dropdown-item btn btn-sm w-100">
+                                    <i class="fas fa-edit me-2"></i> Edit
+                                </a>
+                                <a href="{% url 'clients:delete' client.id %}" class="dropdown-item btn btn-sm w-100 text-danger" onclick="return confirm('Are you sure you want to delete this client?');">
+                                    <i class="fas fa-trash me-2"></i> Delete
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -54,5 +65,34 @@
 </div>
 </div>
 
+<style>
+/* Mobile: stack action menu buttons, make them full width and small, and force visibility for testing */
+@media (max-width: 767.98px) {
+  .action-menu-mobile-stack {
+    position: absolute !important;
+    left: 0 !important;
+    min-width: 100vw !important;
+    background: #222 !important; /* test background */
+    z-index: 9999 !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15) !important;
+    padding: 0.5rem 0.25rem !important;
+  }
+  .action-menu-mobile-stack .dropdown-item {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 0.5rem !important;
+    font-size: 0.95rem !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 0.5rem !important;
+    text-align: center !important;
+    background: #333 !important; /* test background */
+    color: #fff !important;
+  }
+  .action-menu-mobile-stack .dropdown-item:last-child {
+    margin-bottom: 0 !important;
+  }
+}
+</style>
 
 {% endblock %}

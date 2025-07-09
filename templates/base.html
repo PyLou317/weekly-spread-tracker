@@ -20,25 +20,22 @@
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container-fluid">
             <!-- Sidebar Toggle Button (Mobile) -->
-            {% if user.is_authenticated %}
             <button class="navbar-toggler sidebar-toggle me-2" type="button" id="sidebarToggle" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            {% endif %}
 
             <!-- Brand -->
             <a class="navbar-brand" href="{% url 'dashboard:dashboard' %}">
                 <i class="fas fa-chart-line"></i> Staffing Tracker
             </a>
 
-            {% if user.is_authenticated %}
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 {% url 'dashboard:dashboard' as dashboard_url %}
                 {% url 'contractors:list' as contractors_url %}
                 {% url 'clients:list' as clients_url %}
                 {% url 'alerts:alerts_list' as alerts_url %}
                 {% url 'reports:upload' as reports_url %}
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-lg-none">
                     <li class="nav-item">
                         <a class="nav-link{% if request.path == dashboard_url %} active{% endif %}" href="{{ dashboard_url }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
                     </li>
@@ -56,14 +53,6 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item d-lg-block">
-                        <span class="navbar-text me-3">
-                            <i class="fas fa-clock"></i>
-                            <span id="current-datetime">
-                                {% now "M j, Y g:i A" %}
-                            </span>
-                        </span>
-                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user"></i>
@@ -81,14 +70,12 @@
                     </li>
                 </ul>
             </div>
-            {% endif %}
         </div>
     </nav>
 
     <!-- Content Wrapper -->
     <div class="content-wrapper">
         <!-- Sidebar -->
-        {% if user.is_authenticated %}
         <nav class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <span class="fw-bold">Navigation</span>
@@ -126,20 +113,10 @@
                 </ul>
             </div>
         </nav>
-        {% endif %}
 
         <!-- Main Content -->
         <div class="main-content" id="mainContent">
         <div class="container-fluid pt-3">
-            <!-- Mobile DateTime Display -->
-            <div class="d-lg-none mb-3">
-                <div class="mobile-datetime">
-                    <i class="fas fa-clock"></i>
-                    <span id="mobile-current-datetime">
-                        {% now "M j, Y g:i A" %}
-                    </span>
-                </div>
-            </div>
             
             {% if messages %}
                 {% for message in messages %}
@@ -154,46 +131,6 @@
             {% endblock %}
         </div>
     </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer mt-auto py-4">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="footer-content">
-                        <h6 class="text-light mb-2">
-                            <i class="fas fa-chart-line"></i> Staffing Tracker
-                        </h6>
-                        <p class="text-muted mb-0 small">
-                            Streamline your staffing agency operations with our comprehensive tracking platform.
-                        </p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="footer-content text-md-end">
-                        <div class="footer-links mb-2">
-                            <a href="{% url 'dashboard:dashboard' %}" class="text-muted me-3 small">
-                                Dashboard
-                            </a>
-                            <a href="{% url 'contractors:list' %}" class="text-muted me-3 small">
-                                Contractors
-                            </a>
-                            <a href="{% url 'clients:list' %}" class="text-muted me-3 small">
-                                Clients
-                            </a>
-                            <a href="{% url 'alerts:alerts_list' %}" class="text-muted small">
-                                Alerts
-                            </a>
-                        </div>
-                        <p class="text-muted mb-0 small">
-                            &copy; {% now "Y" %} Staffing Tracker. All rights reserved.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>

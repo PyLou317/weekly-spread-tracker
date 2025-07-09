@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load humanize %}
+{% load contractor_extras %}
 
 {% block title %}Contractors - Staffing Tracker{% endblock %}
 
@@ -11,169 +12,100 @@
                 <h2 class="fw-bold mb-1">Contractors</h2>
                 <div class="text-muted">Manage your contractor list and details here.</div>
             </div>
-            <div class="candidates-header-actions">
-                <a href="{% url 'contractors:review_queue' %}" class="btn btn-warning rounded-pill me-2">
-            <i class="fas fa-clock"></i> Review Queue
-        </a>
-                <a href="{% url 'contractors:create' %}" class="btn btn-primary rounded-pill">
-                                <i class="fas fa-plus"></i> Add Contractor
-        </a>
-                <a href="{% url 'reports:upload' %}" class="btn btn-secondary ms-2 rounded-pill">
+            <div class="candidates-header-actions d-flex flex-row flex-lg-row gap-2 gap-lg-2">
+                <a href="{% url 'contractors:review_queue' %}" class="btn btn-warning rounded-pill action-btn-responsive">
+                    <i class="fas fa-clock"></i> Review Queue
+                </a>
+                <a href="{% url 'contractors:create' %}" class="btn btn-primary rounded-pill action-btn-responsive">
+                    <i class="fas fa-plus"></i> Add Contractor
+                </a>
+                <a href="{% url 'reports:upload' %}" class="btn btn-secondary ms-2 rounded-pill action-btn-responsive">
                     <i class="fas fa-upload"></i> Upload Report
                 </a>
-    </div>
+            </div>
 </div>
 
         <!-- Search & Filters -->
         <form method="get" class="modern-search-bar mb-4">
-            <div class="search-bar-inner">
+            <div class="search-bar-inner d-flex">
                 <input type="text" name="search" class="form-control search-input" placeholder="Search by contractor or client name..." value="{{ search|default_if_none:'' }}">
-                <button type="submit" class="btn search-bar-btn">Search</button>
+                <button type="submit" class="btn btn-primary search-bar-btn ms-1">Search</button>
             </div>
         </form>
+
+        <div class="mb-3">
+          <div class="d-flex flex-wrap align-items-center gap-2">
+            <span class="fw-semibold me-2">Toggle Columns:</span>
+            <label class="form-check-label"><input type="checkbox" class="column-toggle-bar" data-col="col-id" checked> ID</label>
+            <label class="form-check-label mobile-toggle-label"><input type="checkbox" class="column-toggle-bar" data-col="col-name" checked> Name</label>
+            <label class="form-check-label desktop-toggle-label"><input type="checkbox" class="column-toggle-bar" data-col="col-contractor" checked> Contractor Name</label>
+            <label class="form-check-label desktop-toggle-label"><input type="checkbox" class="column-toggle-bar" data-col="col-client" checked> Client Name</label>
+            <label class="form-check-label desktop-toggle-label"><input type="checkbox" class="column-toggle-bar" data-col="col-start" checked> Start Date</label>
+            <label class="form-check-label desktop-toggle-label"><input type="checkbox" class="column-toggle-bar" data-col="col-end" checked> End Date</label>
+            {% if user.role == "account_manager" %}
+                <label class="form-check-label desktop-toggle-label"><input type="checkbox" class="column-toggle-bar" data-col="col-recruiter" checked> Recruiter</label>
+            {% else %}
+                <label class="form-check-label desktop-toggle-label"><input type="checkbox" class="column-toggle-bar" data-col="col-recruiter" checked> Account Manager</label>
+            {% endif %}
+            <label class="form-check-label desktop-toggle-label"><input type="checkbox" class="column-toggle-bar" data-col="col-status" checked> Status</label>
+            <label class="form-check-label"><input type="checkbox" class="column-toggle-bar" data-col="col-spread" checked> Spread</label>
+          </div>
+        </div>
 
         <div class="table-responsive">
             <table class="table align-middle mb-0 table-container">
                 <thead>
                     <tr>
-                        <th class="mobile-only">
-                            <a href="?sort=contractor_name&direction={% if sort == 'contractor_name' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}" class="fw-semibold d-inline-flex align-items-center {% if sort == 'contractor_name' %}table-sort-active{% endif %}">
-                                Name
-                                {% if sort == 'contractor_name' %}
-                                    {% if direction == 'asc' %}
-                                        <i class="fas fa-chevron-up ms-1"></i>
-                                    {% else %}
-                                        <i class="fas fa-chevron-down ms-1"></i>
-                                    {% endif %}
-                                {% else %}
-                                    <i class="fas fa-chevron-up ms-1 text-muted opacity-25"></i>
-                                {% endif %}
-                            </a>
+                        <th class="col-id">
+                            <span>ID</span>
                         </th>
-                        <th class="desktop-only">
-                            <a href="?sort=contractor_name&direction={% if sort == 'contractor_name' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}" class="fw-semibold d-inline-flex align-items-center {% if sort == 'contractor_name' %}table-sort-active{% endif %}">
-                                Contractor Name
-                                {% if sort == 'contractor_name' %}
-                                    {% if direction == 'asc' %}
-                                        <i class="fas fa-chevron-up ms-1"></i>
-                                    {% else %}
-                                        <i class="fas fa-chevron-down ms-1"></i>
-                                    {% endif %}
-                                {% else %}
-                                    <i class="fas fa-chevron-up ms-1 text-muted opacity-25"></i>
-                                {% endif %}
-                            </a>
+                        <th class="col-name">
+                            <span>Name</span>
                         </th>
-                        <th class="desktop-only">
-                            <a href="?sort=client_name&direction={% if sort == 'client_name' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}" class="fw-semibold d-inline-flex align-items-center {% if sort == 'client_name' %}table-sort-active{% endif %}">
-                                Client Name
-                                {% if sort == 'client_name' %}
-                                    {% if direction == 'asc' %}
-                                        <i class="fas fa-chevron-up ms-1"></i>
-                                    {% else %}
-                                        <i class="fas fa-chevron-down ms-1"></i>
-                                    {% endif %}
-                                {% else %}
-                                    <i class="fas fa-chevron-up ms-1 text-muted opacity-25"></i>
-                                {% endif %}
-                            </a>
+                        <th class="col-contractor">
+                            <span>Contractor Name</span>
                         </th>
-                        <th class="desktop-only">
-                            <a href="?sort=contract_start_date&direction={% if sort == 'contract_start_date' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}" class="fw-semibold d-inline-flex align-items-center {% if sort == 'contract_start_date' %}table-sort-active{% endif %}">
-                                Start Date
-                                {% if sort == 'contract_start_date' %}
-                                    {% if direction == 'asc' %}
-                                        <i class="fas fa-chevron-up ms-1"></i>
-                                    {% else %}
-                                        <i class="fas fa-chevron-down ms-1"></i>
-                                    {% endif %}
-                                {% else %}
-                                    <i class="fas fa-chevron-up ms-1 text-light opacity-25"></i>
-                                {% endif %}
-                            </a>
+                        <th class="col-client">
+                            <span>Client Name</span>
                         </th>
-                        <th class="desktop-only">
-                            <a href="?sort=contract_end_date&direction={% if sort == 'contract_end_date' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}" class="fw-semibold d-inline-flex align-items-center {% if sort == 'contract_end_date' %}table-sort-active{% endif %}">
-                                End Date
-                                {% if sort == 'contract_end_date' %}
-                                    {% if direction == 'asc' %}
-                                        <i class="fas fa-chevron-up ms-1"></i>
-                                    {% else %}
-                                        <i class="fas fa-chevron-down ms-1"></i>
-                                    {% endif %}
-                                {% else %}
-                                    <i class="fas fa-chevron-up ms-1 text-light opacity-25"></i>
-                                {% endif %}
-                            </a>
+                        <th class="col-start">
+                            <span>Start Date</span>
                         </th>
-                        <th class="desktop-only">
-                            <a href="?sort=recruiter_or_account_manager&direction={% if sort == 'recruiter_or_account_manager' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}" class="fw-semibold d-inline-flex align-items-center {% if sort == 'recruiter_or_account_manager' %}table-sort-active{% endif %}">
-                                {% if user_profile and user_profile.role == 'account_manager' %}
-                                    Recruiter
-                                {% elif user_profile and user_profile.role == 'recruiter' %}
-                                    Account Manager
-                                {% else %}
-                                    Recruiter/Account Manager
-                                {% endif %}
-                                {% if sort == 'recruiter_or_account_manager' %}
-                                    {% if direction == 'asc' %}
-                                        <i class="fas fa-chevron-up ms-1"></i>
-                                    {% else %}
-                                        <i class="fas fa-chevron-down ms-1"></i>
-                                    {% endif %}
-                                {% else %}
-                                    <i class="fas fa-chevron-up ms-1 text-muted opacity-25"></i>
-                                {% endif %}
-                            </a>
+                        <th class="col-end">
+                            <span>End Date</span>
                         </th>
-                        <th class="desktop-only">
-                            <a href="?sort=status&direction={% if sort == 'status' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}" class="fw-semibold d-inline-flex align-items-center {% if sort == 'status' %}table-sort-active{% endif %}">
-                                Status
-                                {% if sort == 'status' %}
-                                    {% if direction == 'asc' %}
-                                        <i class="fas fa-chevron-up ms-1"></i>
-                                    {% else %}
-                                        <i class="fas fa-chevron-down ms-1"></i>
-                                    {% endif %}
-                                {% else %}
-                                    <i class="fas fa-chevron-up ms-1 text-muted opacity-25"></i>
-                                {% endif %}
-                            </a>
+                        <th class="col-recruiter">
+                            {% if user.role == "account_manager" %}
+                                <span>Recruiter</span>
+                            {% else %}
+                                <span>Account Manager</span>
+                            {% endif %}
                         </th>
-                        <th>
-                            <a href="?sort=weekly_spread_amount&direction={% if sort == 'weekly_spread_amount' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}" class="fw-semibold d-inline-flex align-items-center {% if sort == 'weekly_spread_amount' %}table-sort-active{% endif %}">
-                                Spread
-                                {% if sort == 'weekly_spread_amount' %}
-                                    {% if direction == 'asc' %}
-                                        <i class="fas fa-chevron-up ms-1"></i>
-                                    {% else %}
-                                        <i class="fas fa-chevron-down ms-1"></i>
-                                    {% endif %}
-                                {% else %}
-                                    <i class="fas fa-chevron-up ms-1 text-muted opacity-25"></i>
-                                {% endif %}
-                            </a>
+                        <th class="col-status">
+                            <span>Status</span>
                         </th>
-                        <th></th>
+                        <th class="col-spread">
+                            <span>Spread</span>
+                        </th>
+                        <th class="col-actions">
+                            <span></span>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for candidate in page_obj %}
                     <tr class="table-row-hover">
-                        <td class="mobile-only">
-                            <div class="fw-semibold small">{{ candidate.contractor_name }}</div>
+                        <td class="col-id">{{ candidate.contractor_id }}</td>
+                        <td class="col-name">
+                            <div class="fw-semibold small">{{ candidate.contractor_name|first_last }}</div>
                             <div class="text-muted small">{{ candidate.client_name }}</div>
                         </td>
-                        <td class="fw-semibold small desktop-only">{{ candidate.contractor_name }}</td>
-                        <td class="small desktop-only">{{ candidate.client_name }}</td>
-                        <td class="desktop-only">
-                            <span class="small">{{ candidate.contract_start_date|date:'d/m/Y' }}</span>
-                        </td>
-                        <td class="desktop-only">
-                            <span class="small">{{ candidate.contract_end_date|date:'d/m/Y' }}</span>
-                        </td>
-                        <td class="desktop-only">{{ candidate.recruiter_or_account_manager }}</td>
-                        <td class="desktop-only">
+                        <td class="col-contractor">{{ candidate.contractor_name|first_last }}</td>
+                        <td class="col-client">{{ candidate.client_name }}</td>
+                        <td class="col-start">{{ candidate.contract_start_date|date:'d/m/Y' }}</td>
+                        <td class="col-end">{{ candidate.contract_end_date|date:'d/m/Y' }}</td>
+                        <td class="col-recruiter">{{ candidate.recruiter_or_account_manager }}</td>
+                        <td class="col-status">
                             {% if candidate.status == 'active' %}
                                 <span class="badge rounded-pill bg-success-subtle badge-active">Active</span>
                             {% elif candidate.status == 'review' %}
@@ -184,12 +116,15 @@
                                 <span class="badge rounded-pill bg-light text-dark">{{ candidate.status }}</span>
                             {% endif %}
                         </td>
-                        <td class="fw-semibold">${{ candidate.weekly_spread_amount|floatformat:2|intcomma }}</td>
-                        <td class="text-end position-relative">
-                            <button class="btn btn-light btn-circle action-menu-toggle" type="button" title="Actions">
-                                <i class="fas fa-ellipsis-h"></i>
+                        <td class="col-spread fw-semibold">${{ candidate.weekly_spread_amount|floatformat:2|intcomma }}</td>
+                        <td class="col-actions text-end position-relative">
+                            <button class="action-menu-toggle" type="button" title="Actions">
+                                <i class="fas fa-ellipsis-h text-light"></i>
                             </button>
                             <div class="action-menu-dropdown d-none">
+                                <a href="{% url 'contractors:detail' candidate.pk %}" class="dropdown-item">
+                                    <i class="fas fa-eye me-2"></i> View
+                                </a>
                                 <a href="{% url 'contractors:edit' candidate.pk %}" class="dropdown-item">
                                     <i class="fas fa-edit me-2"></i> Edit
                                 </a>
@@ -234,33 +169,104 @@
         </nav>
         </div>
         {% endif %}
+
+        {% if page_obj|length == 0 %}
+        <div class="card-body text-center">
+            <i class="fas fa-user-tie fa-3x text-muted mb-3"></i>
+            <h5>No Contractors Found</h5>
+            <p class="text-muted">Start by uploading your first contractor spread report.</p>
+            <a href="{% url 'reports:upload' %}" class="btn btn-primary rounded-pill">
+                <i class="fas fa-upload"></i> Upload Report
+            </a>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
 
-<style>
-/* Base styles - hide desktop by default */
-.desktop-only {
-    display: none !important;
-}
-
-.mobile-only {
-    display: table-cell !important;
-}
-
-/* Tablet and larger - show desktop, hide mobile */
-@media (min-width: 768px) {
-    .desktop-only {
-        display: table-cell !important;
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('input[name="search"]');
+    const searchButton = document.querySelector('.search-bar-btn');
+    const searchForm = document.querySelector('.modern-search-bar');
+    
+    if (!searchInput || !searchButton || !searchForm) {
+        return;
     }
     
-    .mobile-only {
-        display: none !important;
+    // Function to update button text and behavior
+    function updateSearchButton() {
+        const searchValue = searchInput.value.trim();
+        
+        if (searchValue) {
+            // Change to Clear Search button
+            searchButton.textContent = 'Clear Search';
+            searchButton.classList.remove('btn-primary');
+            searchButton.classList.add('btn-secondary');
+            searchButton.type = 'button';
+            
+            // Remove form submission and add clear functionality
+            searchButton.onclick = function(e) {
+                e.preventDefault();
+                searchInput.value = '';
+                searchForm.submit();
+            };
+        } else {
+            // Change back to Search button
+            searchButton.textContent = 'Search';
+            searchButton.classList.remove('btn-secondary');
+            searchButton.classList.add('btn-primary');
+            searchButton.type = 'submit';
+            searchButton.onclick = null;
+        }
     }
-}
+    
+    // Initialize button state
+    updateSearchButton();
+    
+    // Listen for input changes
+    searchInput.addEventListener('input', updateSearchButton);
+    
+    // Listen for form submission to handle search
+    searchForm.addEventListener('submit', function(e) {
+        const searchValue = searchInput.value.trim();
+        if (!searchValue) {
+            e.preventDefault();
+        }
+    });
 
-/* Ensure proper table display */
-.table td, .table th {
-    display: table-cell;
-}
-</style>
+    // Column toggle logic for bar checkboxes
+    function setColumnVisibility(colClass, visible) {
+        document.querySelectorAll('.' + colClass).forEach(function(cell) {
+            cell.style.display = visible ? '' : 'none';
+        });
+    }
+
+    // Build default state (all columns visible)
+    const defaultCols = {};
+    document.querySelectorAll('.column-toggle-bar').forEach(cb => defaultCols[cb.dataset.col] = true);
+    // Merge saved state with defaults
+    const savedCols = Object.assign({}, defaultCols, JSON.parse(localStorage.getItem('contractorTableCols') || '{}'));
+    document.querySelectorAll('.column-toggle-bar').forEach(function(checkbox) {
+        const col = checkbox.dataset.col;
+        if (savedCols[col] === false) {
+            checkbox.checked = false;
+            setColumnVisibility(col, false);
+        } else {
+            checkbox.checked = true;
+            setColumnVisibility(col, true);
+        }
+        checkbox.addEventListener('change', function() {
+            setColumnVisibility(col, checkbox.checked);
+            // Save state
+            const state = {};
+            document.querySelectorAll('.column-toggle-bar').forEach(function(cb) {
+                state[cb.dataset.col] = cb.checked;
+            });
+            localStorage.setItem('contractorTableCols', JSON.stringify(state));
+        });
+    });
+});
+</script>
+{% endblock %}
