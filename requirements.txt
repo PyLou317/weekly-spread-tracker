@@ -1,5 +1,4 @@
 asgiref==3.9.1
-decouple==0.0.7
 dj-database-url==3.0.1
 Django==5.2.4
 django-allauth==65.9.0
