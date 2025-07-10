@@ -8,19 +8,19 @@
 <div class="container-fluid px-0">
     <div class="card rounded-4 shadow p-4 mb-4">
         <div class="d-flex align-items-center justify-content-between mb-4">
-    <div>
+            <div class="d-flex flex-column me-2">
                 <h2 class="fw-bold mb-1">Contractors</h2>
                 <div class="text-muted">Manage your contractor list and details here.</div>
             </div>
-            <div class="candidates-header-actions d-flex flex-row flex-lg-row gap-2 gap-lg-2">
+            <div class="candidates-header-actions d-flex flex-column flex-sm-row gap-2">
                 <a href="{% url 'contractors:review_queue' %}" class="btn btn-warning rounded-pill action-btn-responsive">
-                    <i class="fas fa-clock"></i> Review Queue
+                    <i class="fas fa-clock"></i> <span class="btn-text">Review Queue</span>
                 </a>
                 <a href="{% url 'contractors:create' %}" class="btn btn-primary rounded-pill action-btn-responsive">
-                    <i class="fas fa-plus"></i> Add Contractor
+                    <i class="fas fa-plus"></i> <span class="btn-text">Add Contractor</span>
                 </a>
-                <a href="{% url 'reports:upload' %}" class="btn btn-secondary ms-2 rounded-pill action-btn-responsive">
-                    <i class="fas fa-upload"></i> Upload Report
+                <a href="{% url 'reports:upload' %}" class="btn btn-secondary rounded-pill action-btn-responsive">
+                    <i class="fas fa-upload"></i> <span class="btn-text">Upload Report</span>
                 </a>
             </div>
 </div>
@@ -56,36 +56,45 @@
             <table class="table align-middle mb-0 table-container">
                 <thead>
                     <tr>
-                        <th class="col-id">
+                        <th class="col-id sortable" data-sort="contractor_id">
                             <span>ID</span>
+                            <i class="fas fa-sort sort-icon"></i>
                         </th>
-                        <th class="col-name">
+                        <th class="col-name sortable" data-sort="contractor_name">
                             <span>Name</span>
+                            <i class="fas fa-sort sort-icon"></i>
                         </th>
-                        <th class="col-contractor">
+                        <th class="col-contractor sortable" data-sort="contractor_name">
                             <span>Contractor Name</span>
+                            <i class="fas fa-sort sort-icon"></i>
                         </th>
-                        <th class="col-client">
+                        <th class="col-client sortable" data-sort="client_name">
                             <span>Client Name</span>
+                            <i class="fas fa-sort sort-icon"></i>
                         </th>
-                        <th class="col-start">
+                        <th class="col-start sortable" data-sort="contract_start_date">
                             <span>Start Date</span>
+                            <i class="fas fa-sort sort-icon"></i>
                         </th>
-                        <th class="col-end">
+                        <th class="col-end sortable" data-sort="contract_end_date">
                             <span>End Date</span>
+                            <i class="fas fa-sort sort-icon"></i>
                         </th>
-                        <th class="col-recruiter">
+                        <th class="col-recruiter sortable" data-sort="recruiter_or_account_manager">
                             {% if user.role == "account_manager" %}
                                 <span>Recruiter</span>
                             {% else %}
                                 <span>Account Manager</span>
                             {% endif %}
+                            <i class="fas fa-sort sort-icon"></i>
                         </th>
-                        <th class="col-status">
+                        <th class="col-status sortable" data-sort="status">
                             <span>Status</span>
+                            <i class="fas fa-sort sort-icon"></i>
                         </th>
-                        <th class="col-spread">
+                        <th class="col-spread sortable" data-sort="weekly_spread_amount">
                             <span>Spread</span>
+                            <i class="fas fa-sort sort-icon"></i>
                         </th>
                         <th class="col-actions">
                             <span></span>
@@ -97,11 +106,11 @@
                     <tr class="table-row-hover">
                         <td class="col-id">{{ candidate.contractor_id }}</td>
                         <td class="col-name">
-                            <div class="fw-semibold small">{{ candidate.contractor_name|first_last }}</div>
-                            <div class="text-muted small">{{ candidate.client_name }}</div>
+                            <div class="fw-semibold small">{{ candidate.contractor_name|first_last|truncatechars:20 }}</div>
+                            <div class="text-muted small">{{ candidate.client_name|truncatechars:20 }}</div>
                         </td>
-                        <td class="col-contractor">{{ candidate.contractor_name|first_last }}</td>
-                        <td class="col-client">{{ candidate.client_name }}</td>
+                        <td class="col-contractor">{{ candidate.contractor_name|first_last|truncatechars:20 }}</td>
+                        <td class="col-client">{{ candidate.client_name|truncatechars:20 }}</td>
                         <td class="col-start">{{ candidate.contract_start_date|date:'d/m/Y' }}</td>
                         <td class="col-end">{{ candidate.contract_end_date|date:'d/m/Y' }}</td>
                         <td class="col-recruiter">{{ candidate.recruiter_or_account_manager }}</td>
@@ -150,19 +159,19 @@
                 <ul class="pagination pagination-rounded mb-0">
                 {% if page_obj.has_previous %}
                     <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search }}{% endif %}">&laquo;</a>
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if order %}&order={{ order }}{% endif %}">&laquo;</a>
                     </li>
                 {% endif %}
                 {% for num in page_obj.paginator.page_range %}
                     {% if page_obj.number == num %}
                             <li class="page-item active"><span class="page-link">{{ num }}</span></li>
                         {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                            <li class="page-item"><a class="page-link" href="?page={{ num }}{% if search %}&search={{ search }}{% endif %}">{{ num }}</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}{% if search %}&search={{ search }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if order %}&order={{ order }}{% endif %}">{{ num }}</a></li>
                         {% endif %}
                     {% endfor %}
                     {% if page_obj.has_next %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search }}{% endif %}">&raquo;</a>
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if order %}&order={{ order }}{% endif %}">&raquo;</a>
                     </li>
                 {% endif %}
             </ul>
@@ -183,6 +192,93 @@
     </div>
 </div>
 {% endblock %}
+
+<style>
+.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+
+.sortable:hover {
+    background-color: rgba(172, 136, 246, 0.1);
+}
+
+.sort-icon {
+    margin-left: 0.5rem;
+    font-size: 0.8rem;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.sortable:hover .sort-icon {
+    opacity: 1;
+}
+
+.sort-asc .sort-icon::before {
+    content: "\f0de"; /* fa-sort-up */
+}
+
+.sort-desc .sort-icon::before {
+    content: "\f0dd"; /* fa-sort-down */
+}
+
+.sort-asc .sort-icon,
+.sort-desc .sort-icon {
+    opacity: 1;
+    color: #AC88F6;
+}
+
+/* Mobile-friendly button styles */
+@media (max-width: 425px) {
+    .candidates-header-actions {
+        width: 100%;
+        margin-top: 1rem;
+    }
+    
+    .action-btn-responsive {
+        width: 100%;
+        justify-content: center;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        min-height: 44px; /* Better touch target */
+    }
+    
+    .btn-text {
+        margin-left: 0.5rem;
+    }
+    
+    /* Stack buttons vertically on very small screens */
+    .candidates-header-actions {
+        flex-direction: column !important;
+    }
+    
+    /* Adjust header layout for mobile */
+    .d-flex.justify-content-between.align-items-center {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+    
+    .d-flex.justify-content-between.align-items-center > div:first-child {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Small screens (426px - 768px) */
+@media (min-width: 426px) and (max-width: 768px) {
+    .candidates-header-actions {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .action-btn-responsive {
+        flex: 1;
+        min-width: 120px;
+        font-size: 0.85rem;
+        padding: 0.6rem 0.8rem;
+    }
+}
+</style>
 
 {% block extra_js %}
 <script>
@@ -235,6 +331,60 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
         }
     });
+
+    // Sorting functionality
+    function handleSort(column, newOrder) {
+        const url = new URL(window.location);
+        const searchParams = url.searchParams;
+        
+        // Remove existing sort parameters
+        searchParams.delete('sort');
+        searchParams.delete('order');
+        
+        // Add new sort parameters
+        searchParams.set('sort', column);
+        searchParams.set('order', newOrder);
+        
+        // Preserve existing search and page parameters
+        if (searchInput.value.trim()) {
+            searchParams.set('search', searchInput.value.trim());
+        }
+        
+        window.location.href = url.toString();
+    }
+
+    // Add click handlers to sortable columns
+    document.querySelectorAll('.sortable').forEach(function(header) {
+        header.addEventListener('click', function() {
+            const column = this.dataset.sort;
+            const currentSort = new URLSearchParams(window.location.search).get('sort');
+            const currentOrder = new URLSearchParams(window.location.search).get('order');
+            
+            let newOrder = 'asc';
+            if (currentSort === column) {
+                // If clicking the same column, toggle the order
+                newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+            } else {
+                // If clicking a different column, start with ascending
+                newOrder = 'asc';
+            }
+            
+            handleSort(column, newOrder);
+        });
+    });
+
+    // Update sort indicators based on current URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentSort = urlParams.get('sort');
+    const currentOrder = urlParams.get('order');
+    
+    if (currentSort) {
+        const activeHeader = document.querySelector(`[data-sort="${currentSort}"]`);
+        if (activeHeader) {
+            activeHeader.classList.remove('sort-asc', 'sort-desc');
+            activeHeader.classList.add(currentOrder === 'desc' ? 'sort-desc' : 'sort-asc');
+        }
+    }
 
     // Column toggle logic for bar checkboxes
     function setColumnVisibility(colClass, visible) {
