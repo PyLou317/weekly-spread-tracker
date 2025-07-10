@@ -1,1 +1,1 @@
-web: gunicorn weekly_spread_tracker.wsgi:application --log-file -
+web: gunicorn django_project.wsgi:application --log-file -
