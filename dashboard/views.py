@@ -49,6 +49,9 @@ def dashboard(request):
     # Quarterly falloff chart data
     quarterly_falloff_data = _get_quarterly_falloff_data(user_contractors)
     guaranteed_spread_data = _get_guaranteed_spread_data(user_contractors)
+    for spread in guaranteed_spread_data:
+        print(spread['quarter'])
+        print(spread['spread'])
     
     # Warning notifications
     expired_contracts = user_contractors.filter(contract_end_date__lt=today)
