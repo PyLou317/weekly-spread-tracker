@@ -32,12 +32,17 @@
 
             <div class="form-group">
                 <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
-                <input type="password" 
-                       name="{{ form.password.name }}" 
-                       id="{{ form.password.id_for_label }}"
-                       class="form-control {% if form.password.errors %}is-invalid{% endif %}"
-                       placeholder="Enter your password"
-                       required>
+                <div class="password-input-container">
+                    <input type="password" 
+                           name="{{ form.password.name }}" 
+                           id="{{ form.password.id_for_label }}"
+                           class="form-control password-input {% if form.password.errors %}is-invalid{% endif %}"
+                           placeholder="Enter your password"
+                           required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('{{ form.password.id_for_label }}')">
+                        <i class="fas fa-eye" id="eye-icon-{{ form.password.id_for_label }}"></i>
+                    </button>
+                </div>
                 {% if form.password.errors %}
                     <div class="invalid-feedback">
                         {{ form.password.errors.0 }}
@@ -73,5 +78,53 @@
     </div>
 </div>
 
+<script>
+function togglePassword(inputId) {
+    const input = document.getElementById(inputId);
+    const eyeIcon = document.getElementById('eye-icon-' + inputId);
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+    }
+}
+</script>
+
+<style>
+.password-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input {
+    padding-right: 3rem;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: color 0.2s;
+}
+
+.password-toggle:hover {
+    color: #AC88F6;
+}
+
+.password-toggle:focus {
+    outline: none;
+    color: #AC88F6;
+}
+</style>
 
 {% endblock %}
