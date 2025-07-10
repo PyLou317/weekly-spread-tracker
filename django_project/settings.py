@@ -190,3 +190,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Session Configuration
+# https://docs.djangoproject.com/en/5.0/topics/http/sessions/
+
+# Session timeout settings (in seconds)
+SESSION_COOKIE_AGE = 2592000  # 30 days (1 month)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Sessions persist after browser close
+SESSION_SAVE_EVERY_REQUEST = True  # Extend session on each request
