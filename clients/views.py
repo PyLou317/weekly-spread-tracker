@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import IntegrityError
+from django.db.models import Sum
 from .models import Client
 from .forms import ClientForm
 from contractors.models import Candidate
@@ -10,15 +11,18 @@ from contractors.models import Candidate
 @login_required
 def client_list(request):
     clients = Client.objects.filter(user=request.user)
-    # Annotate each client with contractor_count
+    # Annotate each client with contractor_count and total_spread
     client_list = []
     for client in clients:
-        contractor_count = Candidate.objects.filter(user=request.user, client_name=client.name).count()
+        contractors = Candidate.objects.filter(user=request.user, client_name=client.name)
+        contractor_count = contractors.count()
+        total_spread = contractors.aggregate(total=Sum('weekly_spread_amount'))['total'] or 0
         client_list.append({
             'id': client.id,
             'name': client.name,
             'created_at': client.created_at,
             'contractor_count': contractor_count,
+            'total_spread': total_spread,
         })
     return render(request, 'clients/list.html', {'clients': client_list})
 
