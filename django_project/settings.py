@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 import dj_database_url
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,23 +22,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-4ju2n@$f9d0c=h)_g0lbb%k9&@rf(xa$d$g$&5ri$uf)*gev^4')
+SECRET_KEY = config('DJANGO_SECRET_KEY', default='django-insecure-4ju2n@$f9d0c=h)_g0lbb%k9&@rf(xa$d$g$&5ri$uf)*gev^4')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() == 'true'
+DEBUG = config('DJANGO_DEBUG', cast=bool, default=True)
 
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',')
-if DEBUG:
-    ALLOWED_HOSTS.extend(['localhost', '127.0.0.1', '[::1]'])
+ALLOWED_HOSTS = [
+    '.railway.app',
+    ]
 
 CSRF_TRUSTED_ORIGINS = [
-        "http://localhost:8000",
-        "http://127.0.0.1:8000",
-        "http://[::1]:8000"
+    'https://*.railway.app'
 ]
 
-# Application definition
+if DEBUG:
+    ALLOWED_HOSTS = [ "*" ]
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -63,6 +64,12 @@ INSTALLED_APPS = [
     'dashboard',
     'alerts',
 ]
+
+if DEBUG:
+    INSTALLED_APPS.append(
+        "whitenoise.runserver_nostatic"
+    )
+
 
 SITE_ID = 1
 
@@ -97,11 +104,6 @@ MIDDLEWARE = [
     'accounts.middleware.TimezoneMiddleware',
 ]
 
-# Only use clickjacking protection in deployments because the Development Web View uses
-# iframes and needs to be a cross origin.
-if ("REPLIT_DEPLOYMENT" in os.environ):
-    MIDDLEWARE.append('django.middleware.clickjacking.XFrameOptionsMiddleware')
-
 ROOT_URLCONF = 'django_project.urls'
 
 TEMPLATES = [
@@ -127,12 +129,21 @@ WSGI_APPLICATION = 'django_project.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite3'), # Fallback for local development
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
+
+DATABASE_URL = config("DATABASE_URL", cast=str, default="")
+if DATABASE_URL:
+    import dj_database_url
+    if DATABASE_URL.startswith("postgres://") or DATABASE_URL.startswith("postgresql://"):
+        DATABASES = {
+            "default": dj_database_url.config(
+                default=DATABASE_URL,
+            )
+        }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -160,11 +171,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'America/Toronto'
-
+TIME_ZONE = 'America/Vancouver'
 USE_I18N = True
-
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
@@ -176,7 +184,7 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files
-MEDIA_URL = '/media/'
+MEDIA_URL = '/media/' if DEBUG else config('MEDIA_URL', default='')
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
