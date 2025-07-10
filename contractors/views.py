@@ -43,15 +43,15 @@ def list_view(request):
 
     # Sorting functionality
     sort = request.GET.get('sort', 'created_at')
-    direction = request.GET.get('direction', 'desc')
+    order = request.GET.get('order', 'desc')
     allowed_sorts = [
-        'contractor_name', 'client_name', 'contract_start_date', 'contract_end_date',
-        'recruiter_or_account_manager', 'status', 'weekly_spread_amount', 'created_at'
+        'contractor_id', 'contractor_name', 'client_name', 'contract_start_date', 
+        'contract_end_date', 'recruiter_or_account_manager', 'status', 'weekly_spread_amount', 'created_at'
     ]
     if sort not in allowed_sorts:
         sort = 'created_at'
-    order = f"{'-' if direction == 'desc' else ''}{sort}"
-    candidates = candidates.order_by(order)
+    order_prefix = '-' if order == 'desc' else ''
+    candidates = candidates.order_by(f"{order_prefix}{sort}")
 
     paginator = Paginator(candidates, 10)
     page_number = request.GET.get('page')
@@ -62,7 +62,7 @@ def list_view(request):
         'page_obj': page_obj,
         'search': search,
         'sort': sort,
-        'direction': direction,
+        'order': order,
     })
 
 
