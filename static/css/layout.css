@@ -115,6 +115,10 @@ body .dropdown-menu {
     text-align: center;
 }
 
+.sidebar-nav .navbar-nav .nav-item {
+    margin: .5rem;
+}
+
 /* Collapsed sidebar states */
 .sidebar.collapsed {
     width: var(--sidebar-collapsed-width);
