@@ -126,6 +126,22 @@
     .mobile-col {
         display: table-cell !important;
     }
+
+    .col-id {
+        font-size: 0.8rem;
+    }
+
+    .col-name {
+        font-size: 0.8rem;
+    }
+    
+    .col-spread {
+        font-size: 0.8rem;
+    }
+
+    .col-actions {
+        font-size: 0.8rem;
+    }
 }
 
 /* On tablet and up, show all columns except Name */
