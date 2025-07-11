@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'reports',
     'dashboard',
     'alerts',
+    'commando',
 ]
 
 if DEBUG:
