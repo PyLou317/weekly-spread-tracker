@@ -253,7 +253,7 @@ body .dropdown-menu {
 .navbar-nav .nav-link {
   color: var(--text-light) !important;
   transition: background 0.2s, color 0.2s;
-  padding-left: 1rem;
+  /* padding-left: 1rem; */
 }
 
 .navbar-nav .nav-link.active, .navbar-nav .nav-link:active {
