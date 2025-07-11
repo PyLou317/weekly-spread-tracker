@@ -24,7 +24,6 @@
                         <thead>
                             <tr>
                                 <th>Client Name</th>
-                                <th>Created</th>
                                 <th class="text-center">Contractors</th>
                                 <th class="text-center">Total Spread</th>
                                 <th></th>
@@ -34,7 +33,6 @@
                             {% for client in clients %}
                     <tr class="table-row-hover">
                         <td class="fw-semibold">{{ client.name }}</td>
-                        <td class="text-muted small">{{ client.created_at|date:"M d, Y" }}</td>
                         <td class="text-center">{{ client.contractor_count }}</td>
                         <td class="text-center">${{ client.total_spread|floatformat:0|intcomma }}</td>
                         <td class="text-end position-relative">
