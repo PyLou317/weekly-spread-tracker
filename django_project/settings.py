@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import dj_database_url
 from decouple import config
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,10 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('DJANGO_SECRET_KEY', default='django-insecure-4ju2n@$f9d0c=h)_g0lbb%k9&@rf(xa$d$g$&5ri$uf)*gev^4')
+SECRET_KEY = config('DJANGO_SECRET_KEY', cast=str, default=get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DJANGO_DEBUG', cast=bool, default=True)
+DEBUG = config('DJANGO_DEBUG', cast=bool, default=False)
 
 
 ALLOWED_HOSTS = [
@@ -135,14 +136,14 @@ DATABASES = {
 }
 
 DATABASE_URL = config("DATABASE_URL", cast=str, default="")
-if DATABASE_URL:
+if DATABASE_URL and not DEBUG:
     import dj_database_url
     if DATABASE_URL.startswith("postgres://") or DATABASE_URL.startswith("postgresql://"):
         DATABASES = {
             "default": dj_database_url.config(
                 default=DATABASE_URL,
             )
-        }
+        }   
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
