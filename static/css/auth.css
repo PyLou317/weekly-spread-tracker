@@ -13,7 +13,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1rem;
+    padding: 1rem 0;
     background: transparent;
     width: 100%;
 }
@@ -23,15 +23,17 @@
     border-radius: 12px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
     padding: 2.5rem;
-    width: 90vw;
-    max-width: 400px;
+    width: 95vw !important;
+    max-width: 450px !important;
     border: 1px solid var(--border-color);
     margin: 0 auto;
 }
 
+
 @media (min-width: 426px) {
     .auth-card {
-        width: 400px;
+        width: 400px !important;
+        max-width: 400px !important;
     }
 }
 
