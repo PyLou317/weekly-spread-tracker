@@ -14,9 +14,10 @@ class CandidateForm(forms.ModelForm):
 
     class Meta:
         model = Candidate
-        fields = ['contractor_name', 'client', 'contract_start_date', 'contract_end_date', 
+        fields = ['contractor_id', 'contractor_name', 'client', 'contract_start_date', 'contract_end_date', 
                  'weekly_spread_amount', 'recruiter_or_account_manager', 'status']
         widgets = {
+            'contractor_id': forms.TextInput(attrs={'class': 'form-control'}),
             'contractor_name': forms.TextInput(attrs={'class': 'form-control'}),
             'contract_start_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'contract_end_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
