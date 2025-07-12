@@ -23,8 +23,8 @@
                     <i class="fas fa-upload"></i> <span class="btn-text">Upload Report</span>
                 </a>
             </div>
-</div>
-
+        </div>
+        {% if page_obj.count > 0 %}
         <!-- Search & Filters -->
         <form method="get" class="modern-search-bar mb-4">
             <div class="search-bar-inner d-flex">
@@ -179,7 +179,7 @@
         </div>
         {% endif %}
 
-        {% if page_obj|length == 0 %}
+        {% else %}
         <div class="card-body text-center">
             <i class="fas fa-user-tie fa-3x text-muted mb-3"></i>
             <h5>No Contractors Found</h5>
