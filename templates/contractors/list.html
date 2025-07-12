@@ -2,7 +2,7 @@
 {% load humanize %}
 {% load contractor_extras %}
 
-{% block title %}Contractors - Spread Tracker{% endblock %}
+{% block title %}Contractors | Spread Tracker{% endblock %}
 
 {% block content %}
 <div class="container-fluid px-0">
@@ -24,7 +24,7 @@
                 </a>
             </div>
         </div>
-        {% if page_obj.count > 0 %}
+        {% if page_obj %}
         <!-- Search & Filters -->
         <form method="get" class="modern-search-bar mb-4">
             <div class="search-bar-inner d-flex">
