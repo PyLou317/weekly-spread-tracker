@@ -95,6 +95,11 @@
     border-radius: 2rem !important;
     margin-left: 0 !important;
   }
+  .candidates-header-actions .action-btn-responsive {
+    max-width: 110px !important;
+    margin-bottom: 0.2rem;
+    font-size: 0.8rem;
+  }
 }
 
 @media (max-width: 991.98px) {
@@ -103,7 +108,7 @@
     align-items: flex-start !important;
   }
   .candidates-header-actions .action-btn-responsive {
-    width: 190px !important;
+    max-width: 190px !important;
     margin-bottom: 0.5rem;
   }
   .candidates-header-actions .action-btn-responsive:last-child {
