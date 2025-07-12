@@ -15,7 +15,7 @@ class CandidateForm(forms.ModelForm):
     class Meta:
         model = Candidate
         fields = ['contractor_id', 'contractor_name', 'client', 'contract_start_date', 'contract_end_date', 
-                 'weekly_spread_amount', 'recruiter_or_account_manager', 'status']
+                 'weekly_spread_amount', 'recruiter_or_account_manager', 'status', 'connected_url', 'notes']
         widgets = {
             'contractor_id': forms.TextInput(attrs={'class': 'form-control'}),
             'contractor_name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -24,6 +24,8 @@ class CandidateForm(forms.ModelForm):
             'weekly_spread_amount': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
             'recruiter_or_account_manager': forms.TextInput(attrs={'class': 'form-control'}),
             'status': forms.Select(attrs={'class': 'form-control'}),
+            'connected_url': forms.URLInput(attrs={'class': 'form-control'}),
+            'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
 
     def __init__(self, *args, **kwargs):

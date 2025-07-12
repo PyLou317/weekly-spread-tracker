@@ -22,6 +22,8 @@ class Candidate(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     contractor_id = models.CharField(max_length=50, blank=True, null=True, unique=False)
+    connected_url = models.URLField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
     
     class Meta:
         ordering = ['-created_at']

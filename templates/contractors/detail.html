@@ -26,6 +26,14 @@
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-sm-3">
+                        <strong>Contractor ID:</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        {{ candidate.contractor_id }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3">
                         <strong>Contractor Name:</strong>
                     </div>
                     <div class="col-sm-9">
@@ -91,6 +99,24 @@
                     </div>
                     <div class="col-sm-9">
                         <span class="badge bg-success">{{ candidate.get_status_display }}</span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-sm-3">
+                        <strong>Connected URL:</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        <a href="{{ candidate.connected_url }}" target="_blank">{{ candidate.connected_url }}</a>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-sm-3">
+                        <strong>Notes:</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        {{ candidate.notes|default:"No notes" }}
                     </div>
                 </div>
             </div>
