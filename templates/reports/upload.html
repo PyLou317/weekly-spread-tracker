@@ -1,5 +1,5 @@
-
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Upload Report | Spread Tracker{% endblock %}
 
@@ -23,6 +23,53 @@
                         <p class="mb-2">Let's get your spread report uploaded to start tracking your contractors and clients.</p>
                     </div>
                 {% endif %}
+                
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    File Download Instructions
+                </button>
+
+                 <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content text-bg-dark" style="background-color: var(--dark-surface);">
+                        <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Spread Report Instructions</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="downloadSpreadInstructions" class="carousel slide carousel-dark">
+                                <div class="carousel-inner">
+                                  <div class="carousel-item active">
+                                    <img src="{% static 'images/upload/spread-tracker-upload-instruction-1.png' %}" class="d-block w-100" alt="Instructions Step 1">
+                                    <div class="mt-2">
+                                        <p>On the Producer Spread Report, click the "Download" icon located on the bottom right of the page and choose the Crosstab format.</p>
+                                    </div>
+                                  </div>
+                                  <div class="carousel-item">
+                                    <img src="{% static 'images/upload/spread-tracker-upload-instruction-2.png' %}" class="d-block w-100" alt="Instructions Step 2">
+                                    <div class="mt-2">
+                                        <p>Then choose CSV as the file type and click "Download".</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#downloadSpreadInstructions" data-bs-slide="prev">
+                                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                  <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#downloadSpreadInstructions" data-bs-slide="next">
+                                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                  <span class="visually-hidden">Next</span>
+                                </button>
+                              </div>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="window.open('https://prod-useast-a.online.tableau.com/t/allegisaaa/views/ProducerSpreadDashboard/ProducerSpreadOverview?iframeSizedToWindow=true&%3Aembed=y&%3AshowAppBanner=false&%3Adisplay_count=no&%3AshowVizHome=no&%3Aorigin=viz_share_link#1', '_blank')">Producer Dashboard</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
                 
                 <div class="alert alert-info">
                     <h6><i class="fas fa-info-circle"></i> File upload steps:</h6>
