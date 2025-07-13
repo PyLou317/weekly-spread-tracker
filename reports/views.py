@@ -254,12 +254,7 @@ def process_report(file_path, user):
                 continue
 
             if existing_candidate:
-                # Update existing candidate
-                for field, value in candidate_data.items():
-                    setattr(existing_candidate, field, value)
-                existing_candidate.save()
-                updated_contractors += 1
-                print(f"Updated existing candidate: {contractor_name}")
+                pass
             else:
                 # Create new candidate
                 new_candidate = Candidate.objects.create(
@@ -286,5 +281,5 @@ def process_report(file_path, user):
         moved_to_review += 1
 
     return {
-        'message': f"Added {new_contractors} new contractors, updated {updated_contractors} existing contractors, moved {moved_to_review} to review queue."
+        'message': f"Added {new_contractors} new contractors and moved {moved_to_review} to review queue."
     }
