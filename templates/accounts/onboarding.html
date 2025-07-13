@@ -13,14 +13,6 @@
                     <p class="text-muted">Let's set up your profile, then upload your first spread report to get started</p>
                 </div>
                 <div class="card-body">
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                    
                     <form method="post">
                         {% csrf_token %}
                         
