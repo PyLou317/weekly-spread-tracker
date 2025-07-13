@@ -270,7 +270,7 @@
 
 .action-menu-dropdown.open-up {
   top: auto !important;
-  bottom: 110%;
+  bottom: 0;
 }
 
 .d-none {
