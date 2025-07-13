@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load humanize %}
+{% load contractor_extras %}
 
 {% block title %}Review Queue - Spread Tracker{% endblock %}
 
@@ -33,8 +35,8 @@
                     <tbody>
                         {% for candidate in candidates %}
                         <tr>
-                            <td>{{ candidate.contractor_name }}</td>
-                            <td>{{ candidate.client_name }}</td>
+                            <td>{{ candidate.contractor_name|first_last }}</td>
+                            <td>{{ candidate.client_name|truncatechars:20 }}</td>
                             <td>{{ candidate.contract_start_date }} - {{ candidate.contract_end_date }}</td>
                             <td>${{ candidate.weekly_spread_amount|floatformat:0 }}</td>
                             <td>
