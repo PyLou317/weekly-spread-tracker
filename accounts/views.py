@@ -99,4 +99,7 @@ def set_timezone(request):
     except json.JSONDecodeError:
         return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
     except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+        # It's good practice to log the actual error for debugging
+        # import logging
+        # logging.error(f"Unexpected error in set_timezone: {e}")
+        return JsonResponse({'status': 'error', 'message': 'An unexpected server error occurred'}, status=500)
