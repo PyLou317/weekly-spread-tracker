@@ -237,8 +237,8 @@
 
 .action-menu-dropdown {
   position: absolute;
-  right: 0;
-  top: 110%;
+  right: 40%;
+  top: 60%;
   min-width: 120px;
   background: #23232b;
   border-radius: 10px;
