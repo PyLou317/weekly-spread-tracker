@@ -42,6 +42,10 @@ def alerts_list(request):
         is_resolved=False
     ).select_related('candidate')
     
+    print(f"Alerts found: {alerts.count()}")
+    for alert in alerts:
+        print(f"Alert found: {alert.candidate.contractor_name} - {alert.get_alert_type_display()}")
+    
     context = {
         'expired_contracts': expired_contracts,
         'imminent_contracts': imminent_contracts,
