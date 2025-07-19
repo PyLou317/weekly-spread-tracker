@@ -197,6 +197,20 @@
                 document.querySelectorAll('.action-menu-dropdown').forEach(function(menu) {
                     menu.classList.add('d-none');
                     menu.classList.remove('open-up');
+
+                    // Toggle extra rows if needed
+                    if (contractorTable) {
+                        extraRowsToggle(contractorTable, 4);
+                        }
+                    if (imminentTable) {
+                        extraRowsToggle(imminentTable, 4);
+                        }
+                    if (quarterlyTable) {
+                        extraRowsToggle(quarterlyTable, 4);
+                        }
+                    if (expiredTable) {
+                        extraRowsToggle(expiredTable, 4);
+                        }3
                 });
             }
 
