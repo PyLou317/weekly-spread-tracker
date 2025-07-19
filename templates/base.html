@@ -174,6 +174,24 @@
                 }
             });
 
+            // Add extra rows to table if needed to display action menu fully
+            const extraRowsToggle = function(table, numExtraRows) {
+                if (!table) return;
+                
+                const tableRows = table.querySelectorAll('.table-row-hover');
+                const extraRows = table.querySelectorAll('.extra-row');
+
+                if (tableRows.length <= 3) {
+                    for (let i = 0; i < numExtraRows - tableRows.length; i++) {
+                        extraRows[i].classList.toggle('d-none')
+                        const rowData = extraRows[i].querySelectorAll('td');
+                        rowData.forEach(function(cell) {
+                            cell.style.borderBottomWidth = 0;
+                            });
+                        }
+                    };
+                }    
+
             // Action menu (3-dot) functionality with upward opening for last three rows and toggle
             function closeAllMenus() {
                 document.querySelectorAll('.action-menu-dropdown').forEach(function(menu) {
@@ -183,11 +201,31 @@
             }
 
             document.querySelectorAll('.action-menu-toggle').forEach(function(btn) {
+                const contractorTable = document.querySelector('#contractor-table');
+                const imminentTable = document.querySelector('#imminent-contracts-table');
+                const quarterlyTable = document.querySelector('#quarterly-contracts-table');
+                const expiredTable = document.querySelector('#expired-contracts-table');
+
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     const menu = btn.nextElementSibling;
                     const isOpen = !menu.classList.contains('d-none');
                     closeAllMenus();
+
+                    // Toggle extra rows if needed
+                    if (contractorTable) {
+                        extraRowsToggle(contractorTable, 4);
+                        }
+                    if (imminentTable) {
+                        extraRowsToggle(imminentTable, 4);
+                        }
+                    if (quarterlyTable) {
+                        extraRowsToggle(quarterlyTable, 4);
+                        }
+                    if (expiredTable) {
+                        extraRowsToggle(expiredTable, 4);
+                        }
+
                     if (!isOpen) {
                         menu.classList.toggle('d-none');
                         // Find all visible table rows
@@ -196,7 +234,7 @@
                             r => r.offsetParent !== null
                         );
                         const rowIndex = allRows.indexOf(row);
-                        // If this is one of the last two rows, open upward
+                        // If this is one of the last three rows, open upward
                         if (rowIndex >= allRows.length - 3) {
                             menu.classList.add('open-up');
                         }
@@ -205,7 +243,7 @@
             });
 
             document.addEventListener('click', closeAllMenus);
-            window.addEventListener('scroll', closeAllMenus, true);
+            // window.addEventListener('scroll', closeAllMenus, true);
             window.addEventListener('resize', closeAllMenus);
         });
 
@@ -252,40 +290,6 @@
                 mobileDatetimeElement.textContent = formattedDateTime;
             }
         }
-
-        // Add extra rows to table if needed to display action menu fully
-        const imminentTable = document.querySelector('#imminent-contracts-table');
-        const quarterlyTable = document.querySelector('#quarterly-contracts-table');
-        const expiredTable = document.querySelector('#expired-contracts-table');
-        const contractorTable = document.querySelector('#contractor-table');
-        
-        const extraRowsToggle = function(table, numExtraRows) {
-            if (!table) return;
-            
-            const tableRows = table.querySelectorAll('.table-row-hover');
-            const extraRows = table.querySelectorAll('.extra-row');
-            console.log(tableRows)
-
-            extraRows.forEach(function(extraRow) {
-                extraRow.classList.add('d-none');
-                console.log('extra row hidden')
-            });
-
-            if (tableRows.length <= 3) {
-                for (let i = 0; i < numExtraRows - tableRows.length; i++) {
-                    extraRows[i].classList.toggle('d-none')
-                    const rowData = extraRows[i].querySelectorAll('td');
-                    rowData.forEach(function(cell) {
-                        cell.style.borderBottomWidth = 0;
-                        });
-                    }
-                };
-            }    
-        
-        extraRowsToggle(imminentTable, 4);
-        extraRowsToggle(quarterlyTable, 4);
-        extraRowsToggle(expiredTable, 4);
-        extraRowsToggle(contractorTable, 4);
         
         // Update time every minute
         setInterval(updateDateTime, 60000);
