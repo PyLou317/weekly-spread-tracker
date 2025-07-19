@@ -174,7 +174,7 @@
                 }
             });
 
-            // Action menu (3-dot) functionality with upward opening for last two rows and toggle
+            // Action menu (3-dot) functionality with upward opening for last three rows and toggle
             function closeAllMenus() {
                 document.querySelectorAll('.action-menu-dropdown').forEach(function(menu) {
                     menu.classList.add('d-none');
@@ -197,7 +197,7 @@
                         );
                         const rowIndex = allRows.indexOf(row);
                         // If this is one of the last two rows, open upward
-                        if (rowIndex >= allRows.length - 2) {
+                        if (rowIndex >= allRows.length - 3) {
                             menu.classList.add('open-up');
                         }
                     }
