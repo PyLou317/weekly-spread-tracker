@@ -252,6 +252,40 @@
                 mobileDatetimeElement.textContent = formattedDateTime;
             }
         }
+
+        // Add extra rows to table if needed to display action menu fully
+        const imminentTable = document.querySelector('#imminent-contracts-table');
+        const quarterlyTable = document.querySelector('#quarterly-contracts-table');
+        const expiredTable = document.querySelector('#expired-contracts-table');
+        const contractorTable = document.querySelector('#contractor-table');
+        
+        const extraRowsToggle = function(table, numExtraRows) {
+            if (!table) return;
+            
+            const tableRows = table.querySelectorAll('.table-row-hover');
+            const extraRows = table.querySelectorAll('.extra-row');
+            console.log(tableRows)
+
+            extraRows.forEach(function(extraRow) {
+                extraRow.classList.add('d-none');
+                console.log('extra row hidden')
+            });
+
+            if (tableRows.length <= 3) {
+                for (let i = 0; i < numExtraRows - tableRows.length; i++) {
+                    extraRows[i].classList.toggle('d-none')
+                    const rowData = extraRows[i].querySelectorAll('td');
+                    rowData.forEach(function(cell) {
+                        cell.style.borderBottomWidth = 0;
+                        });
+                    }
+                };
+            }    
+        
+        extraRowsToggle(imminentTable, 4);
+        extraRowsToggle(quarterlyTable, 4);
+        extraRowsToggle(expiredTable, 4);
+        extraRowsToggle(contractorTable, 4);
         
         // Update time every minute
         setInterval(updateDateTime, 60000);
