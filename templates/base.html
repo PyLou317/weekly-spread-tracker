@@ -175,6 +175,11 @@
             });
 
             // Add extra rows to table if needed to display action menu fully
+            const contractorTable = document.querySelector('#contractor-table');
+            const imminentTable = document.querySelector('#imminent-contracts-table');
+            const quarterlyTable = document.querySelector('#quarterly-contracts-table');
+            const expiredTable = document.querySelector('#expired-contracts-table');
+
             const extraRowsToggle = function(table, numExtraRows) {
                 if (!table) return;
                 
@@ -195,32 +200,15 @@
             // Action menu (3-dot) functionality with upward opening for last three rows and toggle
             function closeAllMenus() {
                 document.querySelectorAll('.action-menu-dropdown').forEach(function(menu) {
+                    
                     menu.classList.add('d-none');
                     menu.classList.remove('open-up');
-
-                    // Toggle extra rows if needed
-                    if (contractorTable) {
-                        extraRowsToggle(contractorTable, 4);
-                        }
-                    if (imminentTable) {
-                        extraRowsToggle(imminentTable, 4);
-                        }
-                    if (quarterlyTable) {
-                        extraRowsToggle(quarterlyTable, 4);
-                        }
-                    if (expiredTable) {
-                        extraRowsToggle(expiredTable, 4);
-                        }3
                 });
             }
-
+             // Open action menu on click
             document.querySelectorAll('.action-menu-toggle').forEach(function(btn) {
-                const contractorTable = document.querySelector('#contractor-table');
-                const imminentTable = document.querySelector('#imminent-contracts-table');
-                const quarterlyTable = document.querySelector('#quarterly-contracts-table');
-                const expiredTable = document.querySelector('#expired-contracts-table');
-
                 btn.addEventListener('click', function(e) {
+                    console.log('Action menu clicked')
                     e.stopPropagation();
                     const menu = btn.nextElementSibling;
                     const isOpen = !menu.classList.contains('d-none');
