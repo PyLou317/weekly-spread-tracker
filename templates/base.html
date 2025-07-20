@@ -200,7 +200,6 @@
             // Action menu (3-dot) functionality with upward opening for last three rows and toggle
             function closeAllMenus() {
                 document.querySelectorAll('.action-menu-dropdown').forEach(function(menu) {
-                    
                     menu.classList.add('d-none');
                     menu.classList.remove('open-up');
                 });
@@ -212,19 +211,20 @@
                     e.stopPropagation();
                     const menu = btn.nextElementSibling;
                     const isOpen = !menu.classList.contains('d-none');
+                    const table = btn.closest('table');
                     closeAllMenus();
 
                     // Toggle extra rows if needed
-                    if (contractorTable) {
+                    if (table == contractorTable) {
                         extraRowsToggle(contractorTable, 4);
                         }
-                    if (imminentTable) {
+                    if (table == imminentTable) {
                         extraRowsToggle(imminentTable, 4);
                         }
-                    if (quarterlyTable) {
+                    if (table == quarterlyTable) {
                         extraRowsToggle(quarterlyTable, 4);
                         }
-                    if (expiredTable) {
+                    if (table == expiredTable) {
                         extraRowsToggle(expiredTable, 4);
                         }
 
