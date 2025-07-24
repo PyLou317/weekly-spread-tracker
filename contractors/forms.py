@@ -14,11 +14,12 @@ class CandidateForm(forms.ModelForm):
 
     class Meta:
         model = Candidate
-        fields = ['contractor_id', 'contractor_name', 'client', 'contract_start_date', 'contract_end_date', 
+        fields = ['contractor_id', 'contractor_first_name', 'contractor_last_name', 'client', 'contract_start_date', 'contract_end_date', 
                  'weekly_spread_amount', 'recruiter_or_account_manager', 'status', 'connected_url', 'notes']
         widgets = {
             'contractor_id': forms.TextInput(attrs={'class': 'form-control'}),
-            'contractor_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'contractor_first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'contractor_last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'contract_start_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'contract_end_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'weekly_spread_amount': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
@@ -44,13 +45,17 @@ class CandidateForm(forms.ModelForm):
                 pass
         
         # Set reasonable field requirements
-        self.fields['contractor_name'].required = True
+        self.fields['contractor_id'].required = True
+        self.fields['contractor_first_name'].required = True
+        self.fields['contractor_last_name'].required = True
         self.fields['client'].required = True
         self.fields['contract_start_date'].required = True
         self.fields['contract_end_date'].required = True
         self.fields['weekly_spread_amount'].required = True
         self.fields['recruiter_or_account_manager'].required = False  # This might be optional
         self.fields['status'].required = False  # Has default
+        self.fields['connected_url'].required = False  # This might be optional
+        self.fields['notes'].required = False  # This might be optional
 
     def save(self, commit=True):
         candidate = super().save(commit=False)

@@ -106,11 +106,11 @@
                     <tr class="table-row-hover">
                         <td class="col-id">{{ candidate.contractor_id }}</td>
                         <td class="col-name">
-                            <div class="fw-semibold small">{{ candidate.contractor_name|first_last|truncatechars:20 }}</div>
-                            <div class="text-muted small">{{ candidate.client_name|truncatechars:20 }}</div>
+                            <div class="fw-semibold small">{{ candidate|full_name|truncatechars:15 }}</div>
+                            <div class="text-muted small">{{ candidate.client_name|truncatechars:15 }}</div>
                         </td>
-                        <td class="col-contractor">{{ candidate.contractor_name|first_last|truncatechars:20 }}</td>
-                        <td class="col-client">{{ candidate.client_name|truncatechars:20 }}</td>
+                        <td class="col-contractor">{{ candidate|full_name|truncatechars:15 }}</td>
+                        <td class="col-client">{{ candidate.client_name|truncatechars:15 }}</td>
                         <td class="col-start">{{ candidate.contract_start_date|date:'d/m/Y' }}</td>
                         <td class="col-end">{{ candidate.contract_end_date|date:'d/m/Y' }}</td>
                         <td class="col-recruiter">{{ candidate.recruiter_or_account_manager }}</td>

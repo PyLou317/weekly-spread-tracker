@@ -11,7 +11,8 @@ class Candidate(models.Model):
         ('inactive', 'Inactive'),
     ]
     
-    contractor_name = models.CharField(max_length=200)
+    contractor_first_name = models.CharField(max_length=200)
+    contractor_last_name = models.CharField(max_length=200)
     client_name = models.CharField(max_length=200)
     contract_start_date = models.DateField()
     contract_end_date = models.DateField()
@@ -31,7 +32,7 @@ class Candidate(models.Model):
         verbose_name_plural = "Contractors"
     
     def __str__(self):
-        return f"{self.contractor_name} at {self.client_name}"
+        return f"{self.contractor_first_name} {self.contractor_last_name} at {self.client_name}"
     
     @property
     def contract_status(self):
