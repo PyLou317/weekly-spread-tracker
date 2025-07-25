@@ -43,10 +43,10 @@
                         {% for contract in expired_contracts %}
                         <tr class="table-row-hover">
                             <td class="mobile-col">
-                                <div class="fw-semibold">{{ contract.contractor_name|first_last }}</div>
+                                <div class="fw-semibold">{{ contract|full_name }}</div>
                                 <div class="text-muted">{{ contract.client_name }}</div>
                             </td>
-                            <td class="desktop-col">{{ contract.contractor_name }}</td>
+                            <td class="desktop-col">{{ contract|full_name }}</td>
                             <td class="desktop-col">{{ contract.client_name }}</td>
                             <td class="desktop-col">{{ contract.contract_end_date }}</td>
                             <td class="text-danger">{{ contract.contract_end_date|timesince }} ago</td>
@@ -109,10 +109,10 @@
                         {% for contract in imminent_contracts %}
                         <tr class="table-row-hover">
                             <td class="mobile-col">
-                                <div class="fw-semibold">{{ contract.contractor_name|first_last }}</div>
+                                <div class="fw-semibold">{{ contract|full_name }}</div>
                                 <div class="text-muted">{{ contract.client_name }}</div>
                             </td>
-                            <td class="desktop-col">{{ contract.contractor_name }}</td>
+                            <td class="desktop-col">{{ contract|full_name }}</td>
                             <td class="desktop-col">{{ contract.client_name }}</td>
                             <td class="desktop-col">{{ contract.contract_end_date }}</td>
                             <td class="text-warning">{{ contract.contract_end_date|timeuntil }}</td>
@@ -175,10 +175,10 @@
                         {% for contract in quarterly_contracts %}
                         <tr class="table-row-hover">
                             <td class="mobile-col">
-                                <div class="fw-semibold">{{ contract.contractor_name|first_last }}</div>
+                                <div class="fw-semibold">{{ contract|full_name }}</div>
                                 <div class="text-muted">{{ contract.client_name }}</div>
                             </td>
-                            <td class="desktop-col">{{ contract.contractor_name }}</td>
+                            <td class="desktop-col">{{ contract|full_name }}</td>
                             <td class="desktop-col">{{ contract.client_name }}</td>
                             <td class="desktop-col">{{ contract.contract_end_date }}</td>
                             <td>{{ contract.contract_end_date|timeuntil }}</td>

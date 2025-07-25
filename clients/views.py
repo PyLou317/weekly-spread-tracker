@@ -5,7 +5,7 @@ from django.db import IntegrityError
 from django.db.models import Sum
 from .models import Client
 from .forms import ClientForm
-from contractors.models import Candidate
+from contractors.models import Contractor
 
 
 @login_required
@@ -14,7 +14,7 @@ def client_list(request):
     # Annotate each client with contractor_count and total_spread
     client_list = []
     for client in clients:
-        contractors = Candidate.objects.filter(user=request.user, client_name=client.name)
+        contractors = Contractor.objects.filter(user=request.user, client_name=client.name)
         contractor_count = contractors.count()
         total_spread = contractors.aggregate(total=Sum('weekly_spread_amount'))['total'] or 0
         client_list.append({

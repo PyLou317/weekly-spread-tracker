@@ -1,5 +1,5 @@
 from django import forms
-from .models import Candidate
+from .models import Contractor
 from clients.models import Client
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -13,7 +13,7 @@ class CandidateForm(forms.ModelForm):
     )
 
     class Meta:
-        model = Candidate
+        model = Contractor
         fields = ['contractor_id', 'contractor_first_name', 'contractor_last_name', 'client', 'contract_start_date', 'contract_end_date', 
                  'weekly_spread_amount', 'recruiter_or_account_manager', 'status', 'connected_url', 'notes']
         widgets = {
@@ -58,9 +58,9 @@ class CandidateForm(forms.ModelForm):
         self.fields['notes'].required = False  # This might be optional
 
     def save(self, commit=True):
-        candidate = super().save(commit=False)
+        contractor = super().save(commit=False)
         if self.cleaned_data.get('client'):
-            candidate.client_name = self.cleaned_data['client'].name
+            contractor.client_name = self.cleaned_data['client'].name
         if commit:
-            candidate.save()
-        return candidate
+            contractor.save()
+        return contractor

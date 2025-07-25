@@ -12,7 +12,6 @@
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
-
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -27,9 +26,15 @@
                                 {% endif %}
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="{{ form.contractor_name.id_for_label }}" class="form-label">Contractor Name</label>
-                            {{ form.contractor_name }}
+                            <label for="{{ form.contractor_first_name.id_for_label }}" class="form-label">First Name</label>
+                            {{ form.contractor_first_name }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.contractor_last_name.id_for_label }}" class="form-label">Last Name</label>
+                            {{ form.contractor_last_name }}
                         </div>
                     </div>
                     <div class="row">

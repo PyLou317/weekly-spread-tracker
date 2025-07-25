@@ -2,14 +2,14 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
-from .models import Candidate
+from .models import Contractor
 from .forms import CandidateForm
 from accounts.models import UserProfile
 
 
 @login_required
 def list_view(request):
-    candidates = Candidate.objects.filter(user=request.user, status='active')
+    contractors = Contractor.objects.filter(user=request.user, status='active')
     user = UserProfile.objects.get(user=request.user)
 
     # Handle batch deletion
@@ -18,14 +18,14 @@ def list_view(request):
         selected_candidates = request.POST.getlist('selected_candidates')
 
         if action == 'delete' and selected_candidates:
-            deleted_count = Candidate.objects.filter(
+            deleted_count = Contractor.objects.filter(
                 pk__in=selected_candidates,
                 user=request.user
             ).delete()[0]
             messages.success(request, f'Successfully deleted {deleted_count} contractors.')
             return redirect('contractors:list')
         elif action == 'delete_all':
-            deleted_count = Candidate.objects.filter(
+            deleted_count = Contractor.objects.filter(
                 user=request.user,
                 status='active'
             ).delete()[0]
@@ -35,9 +35,9 @@ def list_view(request):
     # Search functionality
     search = request.GET.get('search')
     if search:
-        candidates = candidates.filter(
+        contractors = contractors.filter(
             contractor_name__icontains=search
-        ) | candidates.filter(
+        ) | contractors.filter(
             client_name__icontains=search
         )
 
@@ -51,9 +51,9 @@ def list_view(request):
     if sort not in allowed_sorts:
         sort = 'created_at'
     order_prefix = '-' if order == 'desc' else ''
-    candidates = candidates.order_by(f"{order_prefix}{sort}")
+    contractors = contractors.order_by(f"{order_prefix}{sort}")
 
-    paginator = Paginator(candidates, 10)
+    paginator = Paginator(contractors, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -68,7 +68,7 @@ def list_view(request):
 
 @login_required
 def detail_view(request, pk):
-    candidate = get_object_or_404(Candidate, pk=pk, user=request.user)
+    candidate = get_object_or_404(Contractor, pk=pk, user=request.user)
     return render(request, 'contractors/detail.html', {'candidate': candidate})
 
 
@@ -77,9 +77,9 @@ def create_view(request):
     if request.method == 'POST':
         form = CandidateForm(request.POST, user=request.user)
         if form.is_valid():
-            candidate = form.save(commit=False)
-            candidate.user = request.user
-            candidate.save()
+            contractor = form.save(commit=False)
+            contractor.user = request.user
+            contractor.save()
             messages.success(request, 'Contractor added successfully!')
             return redirect('contractors:list')
     else:
@@ -94,7 +94,7 @@ def create_view(request):
 
 @login_required
 def edit_view(request, pk):
-    candidate = get_object_or_404(Candidate, pk=pk, user=request.user)
+    candidate = get_object_or_404(Contractor, pk=pk, user=request.user)
 
     if request.method == 'POST':
         form = CandidateForm(request.POST, instance=candidate, user=request.user)
@@ -115,34 +115,34 @@ def edit_view(request, pk):
 
 @login_required
 def delete_view(request, pk):
-    candidate = get_object_or_404(Candidate, pk=pk, user=request.user)
+    contractor = get_object_or_404(Contractor, pk=pk, user=request.user)
 
     if request.method == 'POST':
-        candidate.delete()
+        contractor.delete()
         messages.success(request, 'Contractor deleted successfully!')
         return redirect('contractors:list')
 
-    return render(request, 'contractors/delete.html', {'candidate': candidate})
+    return render(request, 'contractors/delete.html', {'candidate': contractor})
 
 
 @login_required
 def review_queue_view(request):
-    candidates = Candidate.objects.filter(user=request.user, status='review')
+    contractors = Contractor.objects.filter(user=request.user, status='review')
 
     if request.method == 'POST':
         action = request.POST.get('action')
-        candidate_id = request.POST.get('candidate_id')
-        candidate = get_object_or_404(Candidate, pk=candidate_id, user=request.user)
+        contractor_id = request.POST.get('candidate_id')
+        contractor = get_object_or_404(Contractor, pk=contractor_id, user=request.user)
 
         if action == 'reactivate':
-            candidate.status = 'active'
-            candidate.save()
-            messages.success(request, f'Reactivated {candidate.contractor_name}')
+            contractor.status = 'active'
+            contractor.save()
+            messages.success(request, f'Reactivated {contractor.contractor_first_name} {contractor.contractor_last_name}')
         elif action == 'remove':
-            candidate.status = 'inactive'
-            candidate.save()
-            messages.success(request, f'Removed {candidate.contractor_name}')
+            contractor.status = 'inactive'
+            contractor.save()
+            messages.success(request, f'Removed {contractor.contractor_first_name} {contractor.contractor_last_name}')
 
         return redirect('contractors:review_queue')
 
-    return render(request, 'contractors/review_queue.html', {'candidates': candidates})
+    return render(request, 'contractors/review_queue.html', {'candidates': contractors})

@@ -59,11 +59,24 @@
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
-                                <label for="{{ form.contractor_name.id_for_label }}" class="form-label">Contractor Name</label>
-                                {{ form.contractor_name }}
-                                {% if form.contractor_name.errors %}
+                                <label for="{{ form.contractor_first_name.id_for_label }}" class="form-label">First Name</label>
+                                {{ form.contractor_first_name }}
+                                {% if form.contractor_first_name.errors %}
                                     <div class="text-danger">
-                                        {% for error in form.contractor_name.errors %}
+                                        {% for error in form.contractor_first_name.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="{{ form.contractor_last_name.id_for_label }}" class="form-label">Last Name</label>
+                                {{ form.contractor_last_name }}
+                                {% if form.contractor_last_name.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.contractor_last_name.errors %}
                                             <small>{{ error }}</small>
                                         {% endfor %}
                                     </div>

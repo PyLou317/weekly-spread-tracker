@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Count
-from contractors.models import Candidate
+from contractors.models import Contractor
 from accounts.models import UserProfile
 from datetime import date, timedelta
 from decimal import Decimal
@@ -16,7 +16,7 @@ def dashboard(request):
     except UserProfile.DoesNotExist:
         user_profile = None
     
-    user_contractors = Candidate.objects.filter(user=request.user, status='active')
+    user_contractors = Contractor.objects.filter(user=request.user, status='active')
     
     # Basic metrics
     total_contractors = user_contractors.count()
@@ -49,9 +49,6 @@ def dashboard(request):
     # Quarterly falloff chart data
     quarterly_falloff_data = _get_quarterly_falloff_data(user_contractors)
     guaranteed_spread_data = _get_guaranteed_spread_data(user_contractors)
-    for spread in guaranteed_spread_data:
-        print(spread['quarter'])
-        print(spread['spread'])
     
     # Warning notifications
     expired_contracts = user_contractors.filter(contract_end_date__lt=today)
@@ -77,7 +74,7 @@ def dashboard(request):
         'expired_contracts': expired_contracts,
         'imminent_contracts': imminent_contracts,
         'quarterly_contracts': quarterly_contracts,
-        'review_queue_count': Candidate.objects.filter(user=request.user, status='review').count(),
+        'review_queue_count': Contractor.objects.filter(user=request.user, status='review').count(),
     }
     
     return render(request, 'dashboard/dashboard.html', context)

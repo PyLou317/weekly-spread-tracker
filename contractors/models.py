@@ -4,7 +4,7 @@ from django.utils import timezone
 from datetime import date, timedelta
 
 
-class Candidate(models.Model):
+class Contractor(models.Model):
     STATUS_CHOICES = [
         ('active', 'Active'),
         ('review', 'For Review'),

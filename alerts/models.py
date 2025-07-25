@@ -1,7 +1,5 @@
-
 from django.db import models
-from django.contrib.auth.models import User
-from contractors.models import Candidate
+from contractors.models import Contractor
 
 
 class Alert(models.Model):
@@ -11,7 +9,7 @@ class Alert(models.Model):
         ('quarterly', 'Contract Ending This Quarter'),
     ]
     
-    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
+    contractor = models.ForeignKey(Contractor, on_delete=models.CASCADE)
     alert_type = models.CharField(max_length=20, choices=ALERT_TYPES)
     days_until_end = models.IntegerField()
     is_resolved = models.BooleanField(default=False)
@@ -19,8 +17,8 @@ class Alert(models.Model):
     resolved_at = models.DateTimeField(null=True, blank=True)
     
     class Meta:
-        unique_together = ['candidate', 'alert_type']
+        unique_together = ['contractor', 'alert_type']
         ordering = ['-created_at']
     
     def __str__(self):
-        return f"{self.candidate.contractor_name} - {self.get_alert_type_display()}"
+        return f"{self.contractor.contractor_first_name} {self.contractor.contractor_last_name} - {self.get_alert_type_display()}"
