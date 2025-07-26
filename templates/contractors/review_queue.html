@@ -35,7 +35,7 @@
                     <tbody>
                         {% for candidate in candidates %}
                         <tr>
-                            <td>{{ candidate.contractor_name|first_last }}</td>
+                            <td>{{ candidate|full_name|truncatechars:20 }}</td>
                             <td>{{ candidate.client_name|truncatechars:20 }}</td>
                             <td>{{ candidate.contract_start_date }} - {{ candidate.contract_end_date }}</td>
                             <td>${{ candidate.weekly_spread_amount|floatformat:0 }}</td>
