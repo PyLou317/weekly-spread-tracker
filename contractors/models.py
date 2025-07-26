@@ -11,12 +11,12 @@ class Contractor(models.Model):
         ('inactive', 'Inactive'),
     ]
     
-    contractor_first_name = models.CharField(max_length=200)
-    contractor_last_name = models.CharField(max_length=200)
+    contractor_first_name = models.CharField(max_length=200, null=True, blank=True, verbose_name="First Name")
+    contractor_last_name = models.CharField(max_length=200, null=True, blank=True, verbose_name="Last Name")
     client_name = models.CharField(max_length=200)
     contract_start_date = models.DateField()
     contract_end_date = models.DateField()
-    weekly_spread_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    weekly_spread_amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Spread")
     recruiter_or_account_manager = models.CharField(max_length=200)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
