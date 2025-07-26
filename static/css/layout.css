@@ -314,6 +314,10 @@ body .dropdown-menu {
 
 /* Responsive footer */
 @media (max-width: 767px) {
+  .mobile-table-cell {
+    display: none;
+  }
+  
   .footer {
     flex-direction: column !important;
     height: auto !important;
