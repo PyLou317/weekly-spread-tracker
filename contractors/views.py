@@ -36,10 +36,15 @@ def list_view(request):
     search = request.GET.get('search')
     if search:
         contractors = contractors.filter(
-            contractor_name__icontains=search
+            contractor_first_name__icontains=search
         ) | contractors.filter(
             client_name__icontains=search
+        ) | contractors.filter(
+            contractor_last_name__icontains=search
+        ) | contractors.filter(
+            recruiter_or_account_manager__icontains=search
         )
+
 
     # Sorting functionality
     sort = request.GET.get('sort', 'created_at')
