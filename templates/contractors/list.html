@@ -24,7 +24,7 @@
                 </a>
             </div>
         </div>
-        {% if page_obj %}
+        
         <!-- Search & Filters -->
         <form method="get" class="modern-search-bar mb-4">
             <div class="search-bar-inner d-flex">
@@ -32,7 +32,8 @@
                 <button type="submit" class="btn btn-primary search-bar-btn ms-1">Search</button>
             </div>
         </form>
-
+        
+        {% if page_obj %}
         <div class="mb-3">
           <div class="d-flex flex-wrap align-items-center gap-2">
             <span class="fw-semibold me-2">Toggle Columns:</span>
