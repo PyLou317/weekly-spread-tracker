@@ -68,35 +68,4 @@
         {% endif %}
     </div>
 </div>
-
-<style>
-/* Mobile: stack action menu buttons, make them full width and small, and force visibility for testing */
-@media (max-width: 767.98px) {
-  .action-menu-mobile-stack {
-    position: absolute !important;
-    left: 0 !important;
-    min-width: 100vw !important;
-    background: #222 !important; /* test background */
-    z-index: 9999 !important;
-    border-radius: 0.5rem !important;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15) !important;
-    padding: 0.5rem 0.25rem !important;
-  }
-  .action-menu-mobile-stack .dropdown-item {
-    display: block !important;
-    width: 100% !important;
-    margin-bottom: 0.5rem !important;
-    font-size: 0.95rem !important;
-    padding: 0.5rem 1rem !important;
-    border-radius: 0.5rem !important;
-    text-align: center !important;
-    background: #333 !important; /* test background */
-    color: #fff !important;
-  }
-  .action-menu-mobile-stack .dropdown-item:last-child {
-    margin-bottom: 0 !important;
-  }
-}
-</style>
-
 {% endblock %}
