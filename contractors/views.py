@@ -53,13 +53,25 @@ def list_view(request):
     order_prefix = '-' if order == 'desc' else ''
     contractors = contractors.order_by(f"{order_prefix}{sort}")
 
-    paginator = Paginator(contractors, 10)
+    # Pagination 
+    per_page_options = [10, 20, 50, 100]
+    try:
+        # Sanitize the input to prevent a ValueError
+        per_page = int(request.GET.get('per_page', 10))
+        if per_page not in per_page_options:
+            per_page = 10
+    except (ValueError, TypeError):
+        per_page = 10
+        
+    paginator = Paginator(contractors, per_page)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'contractors/list.html', {
         'user': user,
         'page_obj': page_obj,
+        'selected_per_page': per_page,
+        'per_page_options': per_page_options,
         'search': search,
         'sort': sort,
         'order': order,
